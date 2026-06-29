@@ -1,0 +1,11 @@
+@import './fonts.css';
+@import './tailwind.css';
+@import './theme.css';
+
+/* Hide the native cursor everywhere */
+html.custom-cursor,
+html.custom-cursor *,
+html.custom-cursor *::before,
+html.custom-cursor *::after {
+  cursor: none !important;
+}

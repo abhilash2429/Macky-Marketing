@@ -84,6 +84,10 @@ const DefaultCursorSVG: FC = () => {
   )
 }
 
+// Half-dimensions of DefaultCursorSVG for centering
+const CURSOR_OFFSET_X = 10 // half of width 20
+const CURSOR_OFFSET_Y = 11 // half of height 22
+
 export function SmoothCursor({
   cursor = <DefaultCursorSVG />,
   springConfig = {
@@ -101,8 +105,12 @@ export function SmoothCursor({
   const [isEnabled, setIsEnabled] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
 
-  const cursorX = useSpring(0, springConfig)
-  const cursorY = useSpring(0, springConfig)
+  // FIX 1: Use x/y instead of left/top — these map to CSS transform
+  // and are handled entirely on the compositor thread (no layout recalc).
+  // Subtract cursor offset here so we don't need translateX/translateY in style.
+  const cursorX = useSpring(-CURSOR_OFFSET_X, springConfig)
+  const cursorY = useSpring(-CURSOR_OFFSET_Y, springConfig)
+
   const rotation = useSpring(0, {
     ...springConfig,
     damping: 60,
@@ -140,6 +148,10 @@ export function SmoothCursor({
     }
 
     let timeout: ReturnType<typeof setTimeout> | null = null
+    let rafId = 0
+    // FIX 2: Track latest event so RAF always processes the most recent position,
+    // not the first one captured before the frame fires.
+    let latestEvent: PointerEvent | null = null
 
     const updateVelocity = (currentPos: Position) => {
       const currentTime = Date.now()
@@ -170,8 +182,9 @@ export function SmoothCursor({
         Math.pow(velocity.current.x, 2) + Math.pow(velocity.current.y, 2)
       )
 
-      cursorX.set(currentPos.x)
-      cursorY.set(currentPos.y)
+      // FIX 1 cont: offset baked in here, position anchor is fixed at (0,0)
+      cursorX.set(currentPos.x - CURSOR_OFFSET_X)
+      cursorY.set(currentPos.y - CURSOR_OFFSET_Y)
 
       if (speed > 0.1) {
         const currentAngle =
@@ -197,32 +210,33 @@ export function SmoothCursor({
       }
     }
 
-    let rafId = 0
     const throttledPointerMove = (e: PointerEvent) => {
       if (!isTrackablePointer(e.pointerType)) {
         return
       }
 
+      // FIX 2 cont: always overwrite with latest, then schedule one frame if not pending
+      latestEvent = e
+
       if (rafId) return
 
       rafId = requestAnimationFrame(() => {
-        smoothPointerMove(e)
+        if (latestEvent) smoothPointerMove(latestEvent)
+        latestEvent = null
         rafId = 0
       })
     }
 
-    document.documentElement.classList.add("custom-cursor");
+    document.documentElement.classList.add("custom-cursor")
     window.addEventListener("pointermove", throttledPointerMove, {
       passive: true,
     })
 
     return () => {
       window.removeEventListener("pointermove", throttledPointerMove)
-      document.documentElement.classList.remove("custom-cursor");
+      document.documentElement.classList.remove("custom-cursor")
       if (rafId) cancelAnimationFrame(rafId)
-      if (timeout !== null) {
-        clearTimeout(timeout)
-      }
+      if (timeout !== null) clearTimeout(timeout)
     }
   }, [cursorX, cursorY, rotation, scale, isEnabled])
 
@@ -234,22 +248,19 @@ export function SmoothCursor({
     <motion.div
       style={{
         position: "fixed",
-        left: cursorX,
-        top: cursorY,
-        translateX: "-50%",
-        translateY: "-50%",
+        left: 0,
+        top: 0,
+        x: cursorX,         // compositor-only, no layout recalc
+        y: cursorY,         // compositor-only, no layout recalc
         rotate: rotation,
         scale: scale,
         zIndex: 100,
         pointerEvents: "none",
-        willChange: "transform",
-        opacity: isVisible ? 1 : 0,
+        willChange: "transform", // valid now since transform is what's animating
       }}
       initial={false}
       animate={{ opacity: isVisible ? 1 : 0 }}
-      transition={{
-        duration: 0.15,
-      }}
+      transition={{ duration: 0.15 }}
     >
       {cursor}
     </motion.div>

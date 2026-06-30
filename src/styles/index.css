@@ -9,3 +9,23 @@ html.custom-cursor *::before,
 html.custom-cursor *::after {
   cursor: none !important;
 }
+
+/* Hide scrollbar but keep scrolling */
+
+html {
+  scrollbar-width: none;      /* Firefox */
+  -ms-overflow-style: none;   /* IE & old Edge */
+}
+
+html::-webkit-scrollbar {
+  display: none;              /* Chrome, Edge, Safari */
+}
+
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}

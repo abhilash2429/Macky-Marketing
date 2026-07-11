@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import imgBg from "@/assets/landing-page/bg.png";
 import imgAppScreen from "@/assets/landing-page/macky.png";
+import imgMackyLogo from "@/assets/landing-page/macky-logo.png";
 import { type Colors, Liquid } from "./LiquidGradient";
 import { ShinyButton } from "@/components/ui/ShinyButton";
 import { RainbowButton } from "@/components/ui/rainbow-button";
@@ -262,22 +263,47 @@ export function LandingPage() {
         className="absolute inset-0 w-full h-full object-cover pointer-events-none"
         aria-hidden
       />
-      
-      {/* App screenshot */}
-      <motion.div
-        className="relative w-full max-w-[384px] mx-auto mb-8 rounded-xl overflow-hidden"
-        style={{ height: 134 }}
-        initial={{ opacity: 0, y: -16, scale: 0.96 }}
-        animate={{ opacity: 1, y: [0, -8, 0], scale: 1 }}
-        transition={{ opacity: { duration: 0.8, ease: "easeOut" }, scale: { duration: 0.8, ease: "easeOut" }, y: { duration: 7, repeat: Infinity, ease: "easeInOut" } }}
-      >
-        <img
-          src={imgAppScreen}
-          alt="Macky app interface"
-          className="absolute w-full object-cover"
-          style={{ top: "-63.34%", height: "191.04%" }}
-        />
-      </motion.div>
+
+      <div className="group relative z-20 w-full">
+        <nav
+          className="absolute inset-x-16 top-7 z-20 flex items-center justify-between text-[#0A0A0A] opacity-0 transition-all duration-500 ease-out group-hover:opacity-100 sm:inset-x-28 lg:inset-x-44"
+          style={{ fontFamily: "SF Pro Rounded" }}
+          aria-label="Primary"
+        >
+          <motion.div
+            className="flex items-center gap-1.5 text-[17px] font-semibold tracking-[-0.01em]"
+            whileHover={{ y: -2, scale: 1.04 }}
+            transition={{ type: "spring", stiffness: 260, damping: 18 }}
+          >
+            <img src={imgMackyLogo} alt="" className="h-[1.7em] w-[1.7em] object-contain" aria-hidden />
+            
+            macky
+          </motion.div>
+          <motion.a
+            className="text-[15px] font-semibold tracking-[-0.01em]"
+            href="#privacy"
+            whileHover={{ y: -2, scale: 1.04 }}
+            transition={{ type: "spring", stiffness: 260, damping: 18 }}
+          >
+            <Highlighter action="underline" color="#0A0A0A" enabled={showHighlights}>privacy</Highlighter>
+          </motion.a>
+        </nav>
+        <motion.div
+          className="relative w-full max-w-[384px] mx-auto mb-8 rounded-xl overflow-hidden"
+          style={{ height: 134 }}
+          initial={{ opacity: 0, y: -16, scale: 0.96 }}
+          animate={{ opacity: 1, y: [0, -8, 0], scale: 1 }}
+          whileHover={{ scale: 1.02 }}
+          transition={{ opacity: { duration: 0.8, ease: "easeOut" }, scale: { duration: 0.8, ease: "easeOut" }, y: { duration: 7, repeat: Infinity, ease: "easeInOut" } }}
+        >
+          <img
+            src={imgAppScreen}
+            alt="Macky app interface"
+            className="absolute w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.015]"
+            style={{ top: "-63.34%", height: "191.04%" }}
+          />
+        </motion.div>
+      </div>
 
       <div style={{ paddingTop: "10vh" }}>
         {/* Content */}

@@ -52,6 +52,8 @@ export function Highlighter({
     const element = elementRef.current
     let annotation: RoughAnnotation | null = null
     let resizeObserver: ResizeObserver | null = null
+    let frameId = 0
+    let timeoutId = 0
 
     if (shouldShow && element) {
       const annotationConfig = {
@@ -64,20 +66,29 @@ export function Highlighter({
         multiline,
       }
 
-      const currentAnnotation = annotate(element, annotationConfig)
-      annotation = currentAnnotation
-      currentAnnotation.show()
+      const drawAnnotation = () => {
+        annotation?.remove()
+        annotation = annotate(element, annotationConfig)
+        annotation.show()
+      }
 
-      resizeObserver = new ResizeObserver(() => {
-        currentAnnotation.hide()
-        currentAnnotation.show()
-      })
+      const scheduleRedraw = () => {
+        window.clearTimeout(timeoutId)
+        timeoutId = window.setTimeout(() => {
+          frameId = window.requestAnimationFrame(drawAnnotation)
+        }, 180)
+      }
 
+      drawAnnotation()
+
+      resizeObserver = new ResizeObserver(scheduleRedraw)
       resizeObserver.observe(element)
       resizeObserver.observe(document.body)
     }
 
     return () => {
+      window.cancelAnimationFrame(frameId)
+      window.clearTimeout(timeoutId)
       annotation?.remove()
       if (resizeObserver) {
         resizeObserver.disconnect()

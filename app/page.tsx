@@ -16,6 +16,7 @@ import { FAQList } from "@/components/faq-list";
 import { HeroCopy } from "@/components/hero-copy";
 import { LazyVideo } from "@/components/lazy-video";
 import { MackyLogo } from "@/components/macky-logo";
+import { NotchDemo } from "@/components/notch-demo";
 import { PageShell } from "@/components/page-shell";
 import { Reveal } from "@/components/reveal";
 import { SiteHeader } from "@/components/site-header";
@@ -51,6 +52,15 @@ export default function HomePage() {
         <section className="hero" id="hero">
           <HeroCopy />
 
+        </section>
+
+        <section className="section notch-section">
+          <div className="section-heading centered">
+            <span className="eyebrow"><Sparkles size={16} /> Lives in the notch</span>
+            <h2>Your assistant, wherever you need.</h2>
+            <p>Macky sits flush with your Mac&apos;s notch and expands only when you need it.</p>
+          </div>
+          <NotchDemo />
         </section>
 
         <section className="intro-section" id="how-it-works">

@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { GitFork, Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MackyLogo } from "@/components/macky-logo";
+import { notchPath } from "@/components/notch-shape";
 import { sourceUrl } from "@/lib/content";
 
 const navigation = [
@@ -12,6 +13,54 @@ const navigation = [
   { label: "Coming next", href: "/#coming-next" },
   { label: "FAQ", href: "/#faq" },
 ];
+
+/**
+ * Paints the nav bar as the notch silhouette: flat top edge, top corners
+ * curving inward, bottom corners flaring outward. Measured rather than
+ * scaled so the corner radii stay circular at any width.
+ */
+function NavShellShape() {
+  const ref = useRef<SVGSVGElement | null>(null);
+  const [box, setBox] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    // Measure the nav itself — measuring the SVG would be circular, since
+    // the SVG is sized from the nav.
+    const nav = ref.current?.parentElement;
+    if (!nav) return;
+
+    const observer = new ResizeObserver(([entry]) => {
+      // Use the border box so the SVG viewBox matches the full painted
+      // height (padding included), not the smaller content box — otherwise
+      // the path is drawn short and the flat top lifts off the header edge.
+      const border = entry.borderBoxSize?.[0];
+      const width = border ? border.inlineSize : entry.contentRect.width;
+      const height = border ? border.blockSize : entry.contentRect.height;
+      setBox({ width, height });
+    });
+
+    observer.observe(nav);
+    return () => observer.disconnect();
+  }, []);
+
+  // The shape overhangs the bar on both sides so the inward-curving top
+  // corners have room to render outside the content box.
+  const OVERHANG = 22;
+  const width = box.width + OVERHANG * 2;
+  const height = box.height;
+  const path = box.width > 0 ? notchPath(width, height, OVERHANG, 20) : "";
+
+  return (
+    <svg
+      ref={ref}
+      className="nav-shell-shape"
+      viewBox={`0 0 ${width} ${height}`}
+      aria-hidden="true"
+    >
+      {path && <path d={path} fill="#000" />}
+    </svg>
+  );
+}
 
 export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -43,6 +92,8 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
   return (
     <header className="site-header">
       <nav className={`nav-shell${deferEntrance ? " nav-shell-delayed" : ""}`} aria-label="Main navigation">
+        <NavShellShape />
+
         <Link className="brand" href="/#hero" onClick={closeMenu}>
           <MackyLogo size={26} loading="eager" />
           <span>Macky</span>

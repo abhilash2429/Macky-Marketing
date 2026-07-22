@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { GitFork } from "lucide-react";
+import { HangingLogo } from "@/components/hanging-logo";
 import { MackyLogo } from "@/components/macky-logo";
 import { sourceUrl } from "@/lib/content";
 
@@ -33,6 +34,7 @@ function FooterLinks({ title, links }: { title: string; links: string[][] }) {
 export function SiteFooter() {
   return (
     <footer className="site-footer">
+      <HangingLogo />
       <div className="footer-brand">
         <div className="footer-logo">
           <MackyLogo size={46} glow />

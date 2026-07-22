@@ -189,31 +189,11 @@
   pointer-events: auto;
 }
 
-.nav-shell::before,
-.nav-shell::after {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  top: 0;
-  width: 10px;
-  height: 10px;
-  pointer-events: none;
-}
-
-.nav-shell::before {
-  right: 100%;
-  background: radial-gradient(circle at top right, #000 10px, transparent 10px);
-}
-
-.nav-shell::after {
-  left: 100%;
-  background: radial-gradient(circle at top left, #000 10px, transparent 10px);
-}
-
 .nav-shell > .brand,
 .nav-shell > .desktop-nav,
 .nav-shell > .menu-button,
 .nav-shell > .mobile-nav {
+  position: relative;
   z-index: 1;
 }
 
@@ -452,10 +432,6 @@ body {
     padding: 4px 10px 7px 12px;
     border-radius: 0 0 16px 16px;
   }
-  .nav-shell::before,
-  .nav-shell::after { width: 8px; height: 8px; }
-  .nav-shell::before { background: radial-gradient(circle at top right, #000 8px, transparent 8px); }
-  .nav-shell::after { background: radial-gradient(circle at top left, #000 8px, transparent 8px); }
   .brand { gap: 6px; font-size: 14px; }
   .menu-button { width: 32px; height: 32px; }
 
@@ -485,4 +461,355 @@ body {
   .reveal.is-hidden { opacity:1; transform:none; }
   .faq-answer { transition:none; }
   .hero-eyebrow,.hero-description,.hero-actions.is-visible { opacity:1; filter:none; transform:none; }
+}
+
+/* ── Notch system ─────────────────────────────────────────────
+   Tokens and geometry mirror the shipping macOS app. */
+:root {
+  --nx-bg: #000000;
+  --nx-surface1: #030303;
+  --nx-surface2: #060606;
+  --nx-surface3: #0A0A0A;
+  --nx-border-subtle: #171717;
+  --nx-border-strong: #252525;
+  --nx-text-primary: #F2F2F2;
+  --nx-text-secondary: #A3A3A3;
+  --nx-text-tertiary: #5F5F5F;
+  /* Gentle overshoot — shape and frame ride the same curve. */
+  --nx-morph: cubic-bezier(.34, 1.1, .64, 1);
+}
+
+.notch-section { padding-bottom: 40px; }
+
+.nx-stage { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+
+/* A desktop backdrop, so the black notch reads against it the way it
+   does against real wallpaper. */
+.nx-screen {
+  position: relative;
+  width: min(880px, 100%);
+  height: 430px;
+  overflow: hidden;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 24% 18%, rgba(120,180,255,.32), transparent 42%),
+    radial-gradient(circle at 78% 68%, rgba(255,120,90,.28), transparent 46%),
+    linear-gradient(160deg, #3a4a63, #1d2534 55%, #2a2036);
+  box-shadow: 0 30px 70px rgba(0,0,0,.32), inset 0 0 0 1px rgba(255,255,255,.06);
+}
+
+.nx-menubar {
+  display: flex;
+  justify-content: space-between;
+  height: 32px;
+  padding: 0 16px;
+  align-items: center;
+  background: rgba(0,0,0,.28);
+  backdrop-filter: blur(8px);
+  color: rgba(255,255,255,.82);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* The notch hangs from the top edge, always centered. */
+.nx-notch {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  cursor: pointer;
+  outline: none;
+  transition: width .36s var(--nx-morph), height .36s var(--nx-morph), filter .36s var(--nx-morph);
+  filter: drop-shadow(0 0 0 rgba(0,0,0,0));
+}
+
+.nx-notch.is-open,
+.nx-notch:hover { filter: drop-shadow(0 7px 7px rgba(0,0,0,.7)); }
+
+.nx-notch-shape {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Closed bar: fixed 3-zone layout, bridge stays centered on the cutout. */
+.nx-bar {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 32px;
+  padding-left: 18px;
+}
+
+.nx-status {
+  flex: 0 0 104px;
+  width: 104px;
+  margin-right: 8px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,.9);
+}
+
+.nx-status > span { display: inline-block; animation: nx-status-in .22s ease both; }
+
+@keyframes nx-status-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.nx-bridge { flex: 0 0 185px; }
+.nx-indicator { flex: 0 0 26px; display: flex; align-items: center; justify-content: center; margin-right: 8px; }
+
+/* Idle keeps only the bare bridge — no text, no indicator. */
+.nx-notch:not(.is-active) .nx-status,
+.nx-notch:not(.is-active) .nx-indicator { display: none; }
+.nx-notch:not(.is-active) .nx-bar { padding-left: 0; }
+
+/* Five center-anchored bars, rounded caps. */
+.nx-wave { display: inline-flex; align-items: center; gap: 2px; height: 20px; }
+.nx-wave i {
+  width: 3px;
+  height: 20px;
+  display: block;
+  border-radius: 99px;
+  background: #F5F5F5;
+  transform: scaleY(.18);
+  transform-origin: center;
+  transition-property: transform;
+  transition-timing-function: ease-out;
+  will-change: transform;
+}
+
+/* Grayscale falloff toward the edges, matching the app. */
+.nx-wave i:nth-child(1) { background: #999999; }
+.nx-wave i:nth-child(2) { background: #B8B8B8; }
+.nx-wave i:nth-child(3) { background: #F5F5F5; }
+.nx-wave i:nth-child(4) { background: #D6D6D6; }
+.nx-wave i:nth-child(5) { background: #999999; }
+
+/* 5×5 dot matrix rippling out from the center cell. */
+.nx-spinner {
+  display: grid;
+  grid-template-columns: repeat(5, 3px);
+  gap: 2px;
+  width: 23px;
+  height: 23px;
+}
+
+.nx-spinner i {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #fff;
+  opacity: .1;
+  animation: nx-ripple 1.5s ease-in-out infinite;
+}
+
+@keyframes nx-ripple {
+  0% { opacity: .10; }
+  34% { opacity: 1; }
+  60% { opacity: .24; }
+  100% { opacity: .10; }
+}
+
+/* Open panel drops down out of the notch, anchored at the top. */
+.nx-panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  padding: 30px 30px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  color: var(--nx-text-primary);
+  transform-origin: top center;
+  animation: nx-panel-in .36s var(--nx-morph) both;
+}
+
+@keyframes nx-panel-in {
+  from { opacity: 0; transform: scale(.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.nx-panel-head { display: flex; align-items: center; gap: 12px; }
+.nx-panel-head > div { flex: 1; display: flex; flex-direction: column; }
+.nx-panel-head strong { font-size: 15px; letter-spacing: -.02em; }
+.nx-panel-head span { color: var(--nx-text-secondary); font-size: 12px; }
+
+.nx-transcript { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+.nx-transcript p { margin: 0; padding: 14px 16px; border-radius: 12px; font-size: 14px; line-height: 1.5; }
+.nx-you { align-self: flex-end; max-width: 70%; background: var(--nx-surface3); color: var(--nx-text-primary); }
+.nx-macky { max-width: 84%; background: var(--nx-surface2); border: 1px solid var(--nx-border-subtle); color: var(--nx-text-secondary); }
+
+.nx-panel-actions { display: flex; gap: 8px; }
+.nx-panel-actions span {
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--nx-border-subtle);
+  background: var(--nx-surface1);
+  color: var(--nx-text-tertiary);
+  font-size: 11px;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.nx-hint { margin: 0; color: var(--muted); font-size: 13px; }
+
+/* ── Site header drawn as the notch silhouette ──────────────── */
+.nav-shell {
+  border-radius: 0;
+  background: transparent;
+  overflow: visible;
+}
+
+/* Old radial-gradient corner fakes are replaced by the real SVG path. */
+.nav-shell::before,
+.nav-shell::after { content: none; }
+
+/* The silhouette is painted behind the nav content, and must extend
+   past the bar so the inward-curving top corners have room to render. */
+.nav-shell-shape {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: -22px;
+  width: calc(100% + 44px);
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  filter: drop-shadow(0 14px 34px rgba(0,0,0,.38));
+}
+
+/* A hairline black strip spanning the full viewport keeps the notch reading
+   as continuous with the top edge over any page background — the same 1px
+   continuity the shipping app maintains with the menu bar. */
+.site-header::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #000;
+  pointer-events: none;
+}
+
+/* ── Footer: logo hanging from two ropes ────────────────────── */
+.site-footer { position: relative; overflow: hidden; }
+
+.hanging-logo {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: clamp(80px, 16%, 240px);
+  width: 150px;
+  height: 300px;
+  pointer-events: none;
+}
+
+/* Rotation origin is the anchor point at the very top edge. */
+.hang-pivot {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 150px;
+  height: 260px;
+  margin-left: -75px;
+  transform-origin: 50% 0;
+  pointer-events: auto;
+  animation: hang-sway 6.5s ease-in-out infinite;
+}
+
+/* A manual nudge takes over from the idle sway. */
+.hang-pivot.is-swinging { animation: none; }
+
+@keyframes hang-sway {
+  0%, 100% { transform: rotate(-2.6deg); }
+  50% { transform: rotate(2.6deg); }
+}
+
+.hang-rope {
+  position: absolute;
+  top: 0;
+  width: 3px;
+  height: 152px;
+  border-radius: 99px;
+  background: linear-gradient(180deg, #5a6070, #7d8595 45%, #4e5462);
+  box-shadow: 0 0 6px rgba(0,0,0,.8);
+}
+
+.hang-rope-left { left: 34px; transform: rotate(2.2deg); transform-origin: top center; }
+.hang-rope-right { right: 34px; transform: rotate(-2.2deg); transform-origin: top center; }
+
+/* The anchor points where the ropes meet the footer edge. */
+.hang-rope::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  margin-left: -4.5px;
+  border-radius: 50%;
+  background: #8a92a3;
+  box-shadow: 0 1px 3px rgba(0,0,0,.7);
+}
+
+/* Crossbar the ropes tie onto. */
+.hang-bar {
+  position: absolute;
+  top: 150px;
+  left: 26px;
+  right: 26px;
+  height: 5px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #4a5060, #868da0 50%, #4a5060);
+  box-shadow: 0 2px 6px rgba(0,0,0,.6);
+}
+
+.hang-badge {
+  position: absolute;
+  top: 158px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  border-radius: 28px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: linear-gradient(180deg, #121317, #060608);
+  box-shadow: 0 26px 46px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+@media(max-width: 1100px) { .hanging-logo { display: none; } }
+
+@media(max-width: 900px) {
+  .nx-screen { height: 360px; }
+  .nx-notch.is-open { max-width: calc(100% - 32px); }
+}
+
+@media(max-width: 620px) {
+  .nx-screen { height: 300px; border-radius: 16px; }
+  .nx-hint { font-size: 12px; }
+}
+
+@media(prefers-reduced-motion: reduce) {
+  .nx-notch, .nx-panel, .nx-status > span { transition: none !important; animation: none !important; }
+  .nx-wave i { transition: none !important; }
+  .nx-spinner i { animation: none !important; opacity: calc(.24 + (1 - var(--ring) / 6) * .55); }
+  .hang-pivot { animation: none !important; }
 }

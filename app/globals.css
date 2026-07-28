@@ -668,6 +668,54 @@ body {
 }
 
 .nx-hint { margin: 0; color: var(--muted); font-size: 13px; }
+.nx-hint-error { color: #e5726b; }
+
+/* Live-demo control cluster below the notch. Reuses the notch token palette so it
+   reads as part of the same surface, without touching the notch visuals. */
+.nx-demo-control {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.nx-start {
+  appearance: none;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--blue);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  transition: transform .15s var(--ease-out), background .15s var(--ease-out), opacity .15s var(--ease-out);
+}
+.nx-start:hover { background: var(--blue-light); color: #06121f; }
+.nx-start:active { transform: scale(.97); }
+
+.nx-start-ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--line);
+}
+.nx-start-ghost:hover { background: transparent; color: var(--ink); border-color: var(--ink); }
+
+.nx-hint kbd {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: var(--nx-surface3);
+  color: var(--nx-text-primary);
+  border: 1px solid var(--nx-border-strong);
+}
+
+/* Live transcript reuses the sample transcript styles; only the placeholder hint
+   is dimmed so an empty panel doesn't look broken. */
+.nx-live-hint { opacity: .7; font-style: italic; }
 
 /* ── Site header drawn as the notch silhouette ──────────────── */
 .nav-shell {

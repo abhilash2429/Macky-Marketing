@@ -88,7 +88,7 @@ export default function HomePage() {
                   <p>{feature.description}</p>
                 </div>
                 <div className="video-frame">
-                  <span className="video-badge">Replace with Macky recording</span>
+                  {/* <span className="video-badge">Replace with Macky recording</span> */}
                   <LazyVideo src={feature.video} />
                 </div>
               </article>

@@ -7,7 +7,7 @@ import { sourceUrl } from "@/lib/content";
 const productLinks = [
   ["How it works", "/#how-it-works"],
   ["Capabilities", "/#capabilities"],
-  ["Coming next", "/#coming-next"],
+  ["State & Sub-agents", "/#memory-agents"],
   ["FAQ", "/#faq"],
 ];
 

@@ -50,21 +50,20 @@ export default function HomePage() {
       <PageShell>
         <main>
         <section className="hero" id="hero">
+          <div className="hero-bg" aria-hidden="true" />
           <HeroCopy />
-
         </section>
 
-        <section className="section notch-section">
+        {/* <section className="section notch-section">
           <div className="section-heading centered">
             <span className="eyebrow"><Sparkles size={16} /> Lives in the notch</span>
             <h2>Your assistant, wherever you need.</h2>
             <p>Macky sits flush with your Mac&apos;s notch and expands only when you need it.</p>
           </div>
           <NotchDemo />
-        </section>
+        </section> */}
 
         <section className="intro-section" id="how-it-works">
-          <div className="intro-fog" aria-hidden="true" />
           <div className="section intro-content">
           <div className="section-heading centered">
             <span className="eyebrow"><Sparkles size={16} /> Made for the moment</span>
@@ -105,10 +104,10 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="section organization-grid" id="coming-next">
+        <section className="section organization-grid" id="memory-agents">
           <article className="organization-card category-card">
             <div>
-              <span className="eyebrow"><BrainCircuit size={15} /> Coming next</span>
+              <span className="eyebrow"><BrainCircuit size={15} /> Now Live</span>
               <h3>State Memory</h3>
               <p>{nextCapabilities[0].description}</p>
             </div>
@@ -121,7 +120,7 @@ export default function HomePage() {
           </article>
           <article className="organization-card filters-card">
             <div>
-              <span className="eyebrow"><Workflow size={15} /> Coming next</span>
+              <span className="eyebrow"><Workflow size={15} /> Now Live</span>
               <h3>Sub-agents</h3>
               <p>{nextCapabilities[1].description}</p>
             </div>
@@ -161,7 +160,7 @@ export default function HomePage() {
             <Image src="/assets/macky-logo.png" alt="Macky logo" width={414} height={414} />
             </div>
             <div className="pricing-list">
-              {["Native macOS notch experience","Realtime push-to-talk assistant","Safe Ctrl + Fn dictation","Local Mac actions and seven connectors","State Memory and sub-agents on the roadmap"].map((item) => <span key={item}><Check size={17} /> {item}</span>)}
+              {["Native macOS notch experience","Realtime push-to-talk assistant","Safe Ctrl + Fn dictation","Local Mac actions and seven connectors","Live State Memory and sub-agent delegation"].map((item) => <span key={item}><Check size={17} /> {item}</span>)}
             </div>
             <a className="button button-blue wide-button" href={sourceUrl} target="_blank" rel="noreferrer"><ArrowDownToLine size={18} /> View Macky on GitHub</a>
             <p className="secure-note"><LockKeyhole size={14} /> Review the README before building or deploying the Worker.</p>
@@ -184,7 +183,7 @@ export default function HomePage() {
           <div className="section-heading">
             <span className="eyebrow"><Keyboard size={16} /> Before you start</span>
             <h2>Frequently Asked Questions</h2>
-            <p>What Macky does today, how permissions and context work, and what is still coming next.</p>
+            <p>What Macky does today, how state memory and sub-agents operate, and how permissions work.</p>
           </div>
           <FAQList />
         </section>
@@ -196,7 +195,7 @@ export default function HomePage() {
               <span className="eyebrow">The next Macky layer</span>
               <h2>One voice.<br />More capable work.</h2>
               <h3>Memory and delegation, without losing control.</h3>
-              <p>State Memory and bounded sub-agents are the next major product direction. They are planned—not shipped—and will stay visible and user-controlled.</p>
+              <p>State Memory and bounded sub-agents give Macky continuous context and autonomous delegation, fully visible and user-controlled.</p>
               <a className="button button-light" href="/roadmap">See the roadmap</a>
             </div>
             <div className="dock-preview agent-preview">

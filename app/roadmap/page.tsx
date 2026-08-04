@@ -8,17 +8,34 @@ const roadmapColumns = [
   {
     title: "Shipped",
     icon: CheckCircle2,
-    items: ["Push-to-talk realtime assistant", "Safe Ctrl + Fn dictation", "On-demand screen context", "Native Mac actions", "Seven cloud connectors"],
+    items: [
+      "Push-to-talk realtime assistant",
+      "Safe Ctrl + Fn dictation",
+      "On-demand screen context",
+      "Native Mac actions & 7 connectors",
+      "User-controlled State Memory",
+      "Bounded sub-agent delegation",
+    ],
   },
   {
     title: "Next up",
     icon: CircleDashed,
-    items: ["User-controlled State Memory", "Bounded sub-agent delegation", "Wire Skills into realtime behavior", "Visible delegated task progress"],
+    items: [
+      "Expanded Skill catalog",
+      "Wire Skills into realtime behavior",
+      "Visible delegated task progress",
+      "Background-safe task continuation",
+    ],
   },
   {
     title: "Exploring",
     icon: Lightbulb,
-    items: ["Broader local Mac tool surface", "Durable project context", "Background-safe task continuation", "More connector workflows"],
+    items: [
+      "Broader local Mac tool surface",
+      "Custom local sub-agent models",
+      "Team-shared memory spaces",
+      "More connector workflows",
+    ],
   },
 ];
 

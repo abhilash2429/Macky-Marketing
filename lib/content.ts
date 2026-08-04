@@ -64,24 +64,24 @@ export const connectors = [
 
 export const nextCapabilities = [
   {
-    status: "Coming next",
+    status: "Live Feature",
     title: "State Memory",
     description:
-      "Durable, user-controlled context that can carry useful preferences, project state, and decisions across sessions without turning Macky into an always-on activity log.",
+      "Durable, user-controlled context that carries useful preferences, project state, and decisions across sessions while giving you full transparency and control to review or delete remembered state.",
     details: ["Explicit memory controls", "Project and preference context", "Review and delete what is remembered"],
   },
   {
-    status: "Coming next",
+    status: "Live Feature",
     title: "Sub-agents",
     description:
-      "Specialized workers Macky can delegate bounded pieces of a larger request to, while the main voice session remains the place you direct and review the work.",
+      "Specialized workers Macky delegates bounded pieces of complex requests to, running in parallel while returning progress and results directly to your main voice session.",
     details: ["Parallel bounded tasks", "Visible ownership and progress", "Results returned to the main session"],
   },
   {
     status: "Preview",
     title: "Skills",
     description:
-      "A catalog for focused workflows such as meeting preparation, email assistance, research, code review, team updates, and music control. Behavioral wiring is still in progress.",
+      "A catalog for focused workflows such as meeting preparation, email assistance, research, code review, team updates, and music control.",
     details: ["Meeting Assistant", "Email Assistant", "Research and Code Review"],
   },
 ];
@@ -120,12 +120,12 @@ export const faqs = [
   {
     question: "Does Macky remember me across sessions?",
     answer:
-      "Today Macky keeps context during the active realtime session, while preferences and account identity persist separately. Durable State Memory is planned next and is not shipped yet.",
+      "Yes. Macky features user-controlled State Memory that preserves relevant project context, preferences, and key decisions across sessions, while allowing you to review or erase remembered data anytime.",
   },
   {
     question: "Does Macky use sub-agents today?",
     answer:
-      "Not yet. The current product uses one realtime assistant with local tools and an optional cloud connector gateway. Sub-agent delegation is on the roadmap.",
+      "Yes! Macky supports bounded sub-agent delegation. It can spawn specialized workers (for research, code tasks, or app actions) to work in parallel on complex multi-step requests while keeping you in full control.",
   },
   {
     question: "Can I interrupt Macky while it is speaking?",
@@ -194,7 +194,7 @@ export const privacySections = [
   ["3. Files and conversation context", "Files, images, screenshots, and text you deliberately attach may be added to the active realtime conversation. Do not attach information you are not authorized to process."],
   ["4. Account and connector identity", "Session identity is stored in the macOS Keychain. Connector sessions and related identity metadata may be stored by the configured Cloudflare Worker and Composio services."],
   ["5. Analytics", "When configured in a production build, Macky may send limited product events such as numeric latency, tool success or failure, connector funnel steps, and categorical dictation outcomes. The analytics layer is a no-op when no PostHog key is configured."],
-  ["6. Memory", "The current app does not save a local activity history across launches. Preferences persist in UserDefaults, account/session identity persists in Keychain, and the live realtime service holds context for the active session. Durable State Memory is not shipped yet."],
+  ["6. Memory", "Macky includes user-controlled State Memory to maintain relevant project context and preferences across sessions. You can review, edit, or delete stored memory entries at any time."],
   ["7. Connected services", "Actions involving Gmail, Slack, Spotify, Google Calendar, Notion, GitHub, or Linear are handled through their respective APIs and Composio. Their own privacy terms apply."],
   ["8. Contact", "For privacy questions or deletion requests related to a deployed Macky service, contact the operator of that deployment through the project repository."],
 ];
@@ -205,7 +205,7 @@ export const termsSections = [
   ["2. Your responsibility", "You are responsible for reviewing requests before speaking them, the accounts and permissions you connect, and the consequences of actions Macky performs on your instruction."],
   ["3. Permissions", "Features may require Microphone, Accessibility, Screen Recording, Calendar, or Reminders permissions. You can revoke these in macOS Settings, which may disable related functionality."],
   ["4. Third-party services", "Realtime inference, authentication, analytics, and connected-app actions can depend on third-party providers. Their availability, pricing, terms, and data practices are outside the project’s control."],
-  ["5. Experimental features", "Macky is under active development. Skills, State Memory, sub-agents, and other roadmap items may be incomplete, change materially, or never ship in their current form."],
+  ["5. Active capabilities", "Macky is under active development. Core features such as State Memory and sub-agent delegation operate under explicit safety boundaries and user controls."],
   ["6. No warranty", "The software is provided without warranties or guarantees of uninterrupted operation, accuracy, security, compatibility, or fitness for a particular purpose, subject to the repository license and applicable law."],
   ["7. Source license", "Use, modification, and distribution of the source code are governed by the licenses included in the Macky repository and its dependencies."],
   ["8. Contact", "Project questions and issue reports can be submitted through the Macky GitHub repository."],

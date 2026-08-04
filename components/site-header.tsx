@@ -10,7 +10,7 @@ import { sourceUrl } from "@/lib/content";
 const navigation = [
   { label: "How it works", href: "/#how-it-works" },
   { label: "Capabilities", href: "/#capabilities" },
-  { label: "Coming next", href: "/#coming-next" },
+  { label: "State & Sub-agents", href: "/#memory-agents" },
   { label: "FAQ", href: "/#faq" },
 ];
 

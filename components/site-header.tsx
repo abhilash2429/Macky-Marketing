@@ -1,16 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { GitFork, Menu, X } from "lucide-react";
+import { ArrowUpRight, Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { MackyLogo } from "@/components/macky-logo";
 import { notchPath } from "@/components/notch-shape";
-import { sourceUrl } from "@/lib/content";
 
 const navigation = [
   { label: "How it works", href: "/#how-it-works" },
   { label: "Capabilities", href: "/#capabilities" },
-  { label: "State & Sub-agents", href: "/#memory-agents" },
+  { label: "Memory & agents", href: "/#memory-agents" },
   { label: "FAQ", href: "/#faq" },
 ];
 
@@ -24,15 +23,10 @@ function NavShellShape() {
   const [box, setBox] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
-    // Measure the nav itself — measuring the SVG would be circular, since
-    // the SVG is sized from the nav.
     const nav = ref.current?.parentElement;
     if (!nav) return;
 
     const observer = new ResizeObserver(([entry]) => {
-      // Use the border box so the SVG viewBox matches the full painted
-      // height (padding included), not the smaller content box — otherwise
-      // the path is drawn short and the flat top lifts off the header edge.
       const border = entry.borderBoxSize?.[0];
       const width = border ? border.inlineSize : entry.contentRect.width;
       const height = border ? border.blockSize : entry.contentRect.height;
@@ -43,8 +37,6 @@ function NavShellShape() {
     return () => observer.disconnect();
   }, []);
 
-  // The shape overhangs the bar on both sides so the inward-curving top
-  // corners have room to render outside the content box.
   const OVERHANG = 22;
   const width = box.width + OVERHANG * 2;
   const height = box.height;
@@ -65,6 +57,22 @@ function NavShellShape() {
 export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const section2 = document.getElementById("how-it-works");
+      let threshold = window.innerHeight * 1.4;
+      if (section2) {
+        threshold = section2.offsetTop + section2.offsetHeight - 80;
+      }
+      setIsHidden(window.scrollY > threshold);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     if (!isClosing) return;
@@ -90,7 +98,7 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
   };
 
   return (
-    <header className="site-header">
+    <header className={`site-header${isHidden ? " is-hidden" : ""}`}>
       <nav className={`nav-shell${deferEntrance ? " nav-shell-delayed" : ""}`} aria-label="Main navigation">
         <NavShellShape />
 
@@ -101,9 +109,9 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
 
         <div className="desktop-nav">
           {navigation.map((item) => <Link key={item.label} href={item.href}>{item.label}</Link>)}
-          <a className="nav-download" href={sourceUrl} target="_blank" rel="noreferrer">
-            <GitFork size={14} /> Get Macky
-          </a>
+          <Link className="nav-download" href="/waitlist">
+            Early access <ArrowUpRight size={14} />
+          </Link>
         </div>
 
         <button
@@ -122,7 +130,7 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
             {navigation.map((item) => (
               <Link key={item.label} href={item.href} onClick={closeMenu}>{item.label}</Link>
             ))}
-            <a href={sourceUrl} target="_blank" rel="noreferrer" onClick={closeMenu}><GitFork size={14} /> Get Macky</a>
+            <Link href="/waitlist" onClick={closeMenu}>Early access <ArrowUpRight size={14} /></Link>
           </div>
         )}
       </nav>

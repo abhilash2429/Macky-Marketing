@@ -12,7 +12,7 @@ const roadmapColumns = [
       "Push-to-talk realtime assistant",
       "Safe Ctrl + Fn dictation",
       "On-demand screen context",
-      "Native Mac actions & 7 connectors",
+      "Native Mac actions and seven connectors",
       "User-controlled State Memory",
       "Bounded sub-agent delegation",
     ],
@@ -21,10 +21,10 @@ const roadmapColumns = [
     title: "Next up",
     icon: CircleDashed,
     items: [
-      "Expanded Skill catalog",
-      "Wire Skills into realtime behavior",
-      "Visible delegated task progress",
-      "Background-safe task continuation",
+      "More ways to help with everyday Mac workflows",
+      "Skills that feel natural in a live conversation",
+      "Clearer progress when work is handed off",
+      "Tasks that keep moving without getting in the way",
     ],
   },
   {
@@ -32,8 +32,8 @@ const roadmapColumns = [
     icon: Lightbulb,
     items: [
       "Broader local Mac tool surface",
-      "Custom local sub-agent models",
-      "Team-shared memory spaces",
+      "Local models for focused helper tasks",
+      "Shared context for teams",
       "More connector workflows",
     ],
   },
@@ -47,7 +47,7 @@ export default function RoadmapPage() {
           <span className="eyebrow">What comes next</span>
           <h1>Roadmap</h1>
           <p>What works today, what comes next, and which ideas are still being shaped.</p>
-          <a className="button button-dark" href="/contact">Send feedback <ArrowUpRight size={17} /></a>
+          <a className="button button-dark" href="/waitlist">Request early access <ArrowUpRight size={17} /></a>
         </section>
         <section className="roadmap-board">
           {roadmapColumns.map(({ title, icon: Icon, items }) => (

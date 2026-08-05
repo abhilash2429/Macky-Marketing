@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     template: "%s — Macky",
   },
   description:
-    "Macky is a push-to-talk AI assistant that lives in your Mac's notch and takes action across macOS and connected apps.",
+    "Macky is an early-access voice assistant that lives in your Mac's notch and helps across macOS and the apps you choose to connect.",
   icons: { icon: "/assets/macky-logo.png" },
 };
 

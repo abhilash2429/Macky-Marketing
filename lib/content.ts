@@ -1,5 +1,3 @@
-export const sourceUrl = "https://github.com/abhilash2429/macky";
-
 export const capabilityVideos = [
   {
     title: "Talk to your Mac",
@@ -12,21 +10,21 @@ export const capabilityVideos = [
     title: "Dictate into the right field",
     label: "Ctrl + Fn dictation",
     description:
-      "A separate safety-first dictation path validates the focused editable field, listens while you hold Ctrl + Fn, and inserts one final result only if the same field is still focused.",
+      "A separate safety-first dictation path validates the focused field, listens while you hold Ctrl + Fn, and inserts one final result only if the same field is still active.",
     video: "/assets/ocr.mp4",
   },
   {
     title: "Understand what is on screen",
     label: "On-demand vision",
     description:
-      "When you ask for visual help, Macky can capture fresh screen context and reason about what is in front of you. It does not continuously record your screen.",
+      "When you ask for visual help, Macky captures fresh screen context and reasons about what is in front of you. It does not continuously record your screen.",
     video: "/assets/bulk-copy.mp4",
   },
   {
     title: "Control macOS by voice",
     label: "Native Mac actions",
     description:
-      "Open apps and websites, change volume, toggle Do Not Disturb, lock the screen, operate visible UI, create reminders, and work with your calendar.",
+      "Open apps and websites, change volume, toggle Do Not Disturb, lock the screen, set a reminder, check the calendar, or take care of another supported Mac task.",
     video: "/assets/inline.mp4",
   },
   {
@@ -40,15 +38,8 @@ export const capabilityVideos = [
     title: "Bring files into the conversation",
     label: "Files as context",
     description:
-      "Drop images, PDFs, text, and other readable files into the notch panel, add a prompt, and let Macky use them in the active conversation.",
+      "Drop images, PDFs, text, and other readable files into the notch panel, and Macky will use them alongside the active conversation.",
     video: "/assets/quick-paste.mp4",
-  },
-  {
-    title: "Stay in the live moment",
-    label: "Session context",
-    description:
-      "Macky keeps the thread of your active realtime conversation, including the context and tool results you provide during that session.",
-    video: "/assets/library.mp4",
   },
 ];
 
@@ -67,14 +58,14 @@ export const nextCapabilities = [
     status: "Live Feature",
     title: "State Memory",
     description:
-      "Durable, user-controlled context that carries useful preferences, project state, and decisions across sessions while giving you full transparency and control to review or delete remembered state.",
+      "Durable, user-controlled context that carries preferences, project state, and decisions across sessions — visible and removable at any time.",
     details: ["Explicit memory controls", "Project and preference context", "Review and delete what is remembered"],
   },
   {
     status: "Live Feature",
     title: "Sub-agents",
     description:
-      "Specialized workers Macky delegates bounded pieces of complex requests to, running in parallel while returning progress and results directly to your main voice session.",
+      "Specialized workers Macky can delegate bounded pieces of a larger request to, while the main voice session remains the place you direct and review the work.",
     details: ["Parallel bounded tasks", "Visible ownership and progress", "Results returned to the main session"],
   },
   {
@@ -100,12 +91,12 @@ export const faqs = [
   {
     question: "Is Macky always listening?",
     answer:
-      "No. Assistant audio and dictation begin only while you hold their configured shortcuts. The microphone is not intended to run continuously in the background.",
+      "No. Audio capture begins only while you hold the configured shortcut. The microphone is not intended to run continuously in the background.",
   },
   {
-    question: "Does Macky constantly record my screen?",
+    question: "Does Macky constantly record the screen?",
     answer:
-      "No. Screen context is captured on demand for a request that needs visual understanding. You control the macOS Screen Recording permission.",
+      "No. Screen context is captured on demand when a request needs visual understanding. You control the macOS Screen Recording permission.",
   },
   {
     question: "How is dictation different from the assistant?",
@@ -113,29 +104,29 @@ export const faqs = [
       "Ctrl + Fn dictation is a separate text-only path. It does not speak, call tools, send a message, press Return, or submit a form. It revalidates the original text field before inserting anything.",
   },
   {
-    question: "Which services can I connect?",
+    question: "Which services can be connected?",
     answer:
-      "The current app surfaces Gmail, Slack, Spotify, Google Calendar, Notion, GitHub, and Linear. Native Calendar, Reminders, system controls, app launching, and screen actions are implemented locally on the Mac.",
+      "The current app surfaces Gmail, Slack, Spotify, Google Calendar, Notion, GitHub, and Linear. Calendar, Reminders, system controls, app launching, and screen actions are handled locally on the Mac.",
   },
   {
-    question: "Does Macky remember me across sessions?",
+    question: "Does Macky remember context across sessions?",
     answer:
-      "Yes. Macky features user-controlled State Memory that preserves relevant project context, preferences, and key decisions across sessions, while allowing you to review or erase remembered data anytime.",
+      "Yes. State Memory carries forward the context, preferences, and decisions that make future conversations easier. You can review or remove anything Macky remembers.",
   },
   {
-    question: "Does Macky use sub-agents today?",
+    question: "Can Macky hand off work?",
     answer:
-      "Yes! Macky supports bounded sub-agent delegation. It can spawn specialized workers (for research, code tasks, or app actions) to work in parallel on complex multi-step requests while keeping you in full control.",
+      "Yes. Macky can split a larger request into focused pieces — research, code, or app actions — work on them in parallel, and bring everything back to the main session.",
   },
   {
-    question: "Can I interrupt Macky while it is speaking?",
+    question: "Can Macky be interrupted while speaking?",
     answer:
       "Yes. Hold the push-to-talk shortcut again and Macky stops playback and starts listening to the new turn.",
   },
   {
-    question: "Can I build Macky myself?",
+    question: "How do you get access?",
     answer:
-      "Yes. Macky is available as source code on GitHub. The current repository includes the native Swift app, Cloudflare Worker, setup documentation, and release tooling.",
+      "Macky is opening early access in small groups. Join the waitlist and you'll be notified when a spot is ready.",
   },
 ];
 
@@ -152,7 +143,7 @@ export const updates: UpdatePost[] = [
   {
     slug: "realtime-dictation-pipeline",
     date: "Jul 15, 2026",
-    title: "Dictation moves to Azure Realtime mini",
+    title: "Dictation moves to a dedicated realtime path",
     intro: ["Macky now uses a dedicated, on-demand realtime path for safe Ctrl + Fn dictation."],
     items: [
       "One authenticated text-only realtime session per dictation.",
@@ -165,12 +156,12 @@ export const updates: UpdatePost[] = [
     slug: "foreground-context-and-focused-editing",
     date: "Jul 14, 2026",
     title: "Safer focused editing and app context",
-    intro: ["A focused pass on making text editing useful without losing control of where text is written."],
+    intro: ["A focused pass on making text editing more useful without losing control of where text is written."],
     items: [
-      "Optional current-app identity during a voice turn.",
+      "Optional current-app context during a voice turn.",
       "Focused browser text editing support.",
-      "Compact-notch safety notices and copy fallback when focus changes.",
-      "On-demand screen dimensions aligned with the active display.",
+      "Safety notices and copy fallback when focus changes.",
+      "Screen dimensions aligned with the active display.",
     ],
   },
   {
@@ -187,26 +178,114 @@ export const updates: UpdatePost[] = [
   },
 ];
 
-export const privacySections = [
-  ["Last updated: July 15, 2026", "This page summarizes the privacy behavior visible in the current Macky source code. It should be reviewed before a public production release."],
-  ["1. Push-to-talk audio", "Macky is designed to capture assistant and dictation audio only while their shortcuts are held. Audio is sent through the configured realtime service to produce a response or final dictation result."],
-  ["2. Screen context", "Macky does not continuously record the screen. A fresh screenshot may be captured and sent when a request needs visual context. Screen Recording permission is controlled in macOS Settings."],
-  ["3. Files and conversation context", "Files, images, screenshots, and text you deliberately attach may be added to the active realtime conversation. Do not attach information you are not authorized to process."],
-  ["4. Account and connector identity", "Session identity is stored in the macOS Keychain. Connector sessions and related identity metadata may be stored by the configured Cloudflare Worker and Composio services."],
-  ["5. Analytics", "When configured in a production build, Macky may send limited product events such as numeric latency, tool success or failure, connector funnel steps, and categorical dictation outcomes. The analytics layer is a no-op when no PostHog key is configured."],
-  ["6. Memory", "Macky includes user-controlled State Memory to maintain relevant project context and preferences across sessions. You can review, edit, or delete stored memory entries at any time."],
-  ["7. Connected services", "Actions involving Gmail, Slack, Spotify, Google Calendar, Notion, GitHub, or Linear are handled through their respective APIs and Composio. Their own privacy terms apply."],
-  ["8. Contact", "For privacy questions or deletion requests related to a deployed Macky service, contact the operator of that deployment through the project repository."],
-];
+export type LegalDocument = {
+  eyebrow: string;
+  title: string;
+  summary: string;
+  lastUpdated: string;
+  notice?: string;
+  highlights: { title: string; description: string }[];
+  sections: { title: string; paragraphs: string[] }[];
+};
 
-export const termsSections = [
-  ["Last updated: July 15, 2026", "These starter terms describe the current open-source Macky project and are not a substitute for legal review before commercial release."],
-  ["1. The software", "Macky is a macOS voice assistant project that can respond through audio and take supported actions through local tools and connected services."],
-  ["2. Your responsibility", "You are responsible for reviewing requests before speaking them, the accounts and permissions you connect, and the consequences of actions Macky performs on your instruction."],
-  ["3. Permissions", "Features may require Microphone, Accessibility, Screen Recording, Calendar, or Reminders permissions. You can revoke these in macOS Settings, which may disable related functionality."],
-  ["4. Third-party services", "Realtime inference, authentication, analytics, and connected-app actions can depend on third-party providers. Their availability, pricing, terms, and data practices are outside the project’s control."],
-  ["5. Active capabilities", "Macky is under active development. Core features such as State Memory and sub-agent delegation operate under explicit safety boundaries and user controls."],
-  ["6. No warranty", "The software is provided without warranties or guarantees of uninterrupted operation, accuracy, security, compatibility, or fitness for a particular purpose, subject to the repository license and applicable law."],
-  ["7. Source license", "Use, modification, and distribution of the source code are governed by the licenses included in the Macky repository and its dependencies."],
-  ["8. Contact", "Project questions and issue reports can be submitted through the Macky GitHub repository."],
-];
+export const privacyDocument: LegalDocument = {
+  eyebrow: "Privacy",
+  title: "Your privacy",
+  summary:
+    "A clear look at what Macky uses, what you choose to share, and when it leaves your Mac.",
+  lastUpdated: "August 4, 2026",
+  notice:
+    "Macky is in early access. The person or organization running the Macky service you use chooses its service providers, settings, and data-retention practices.",
+  highlights: [
+    { title: "You start the interaction", description: "Macky uses audio, screen context, and files only when you ask it to." },
+    { title: "You control permissions", description: "macOS permissions control access to your microphone, screen, calendars, reminders, and accessibility features." },
+    { title: "You choose connected accounts", description: "A third-party account is involved only after you decide to connect and use it." },
+  ],
+  sections: [
+    {
+      title: "What this covers",
+      paragraphs: [
+        "This page covers the Macky website, early-access requests, and the Macky app. It does not replace the privacy notice of a connected service you decide to use.",
+        "When you request early access, Macky sends the email address you provide to its configured waitlist service so it can manage your request. A site host may also process the basic technical information needed to serve the website.",
+      ],
+    },
+    {
+      title: "Audio, screen context, and attachments",
+      paragraphs: [
+        "Macky captures assistant and dictation audio while you hold the relevant shortcut. When you ask for visual help, it can take a fresh screenshot; it is not meant to continuously record your screen.",
+        "Files, images, screenshots, and text you deliberately attach can be part of the active conversation. Only share material you are allowed to use.",
+      ],
+    },
+    {
+      title: "Permissions and local controls",
+      paragraphs: [
+        "Features can require macOS permissions, including Microphone, Screen Recording, Accessibility, Calendar, and Reminders. You can review or revoke these permissions in macOS Settings, though doing so may turn off the related feature.",
+        "Macky's memory is designed to stay in your control. You can review or remove remembered information from the app you use.",
+      ],
+    },
+    {
+      title: "Service providers and connected accounts",
+      paragraphs: [
+        "Macky can send the information needed to handle your request to its configured realtime, authentication, connector, or analytics providers. Connected services such as Gmail, Slack, Spotify, Google Calendar, Notion, GitHub, and Linear have their own terms and privacy practices.",
+        "Before you connect an account, review the permissions Macky and the service request. You can disconnect an account or revoke access through the relevant app or service provider.",
+      ],
+    },
+    {
+      title: "Questions about your data",
+      paragraphs: [
+        "For questions about retention, deletion, or privacy in the Macky service you use, contact the service operator directly. Do not send passwords, access tokens, or other secrets in a support request.",
+      ],
+    },
+  ],
+};
+
+export const termsDocument: LegalDocument = {
+  eyebrow: "Terms",
+  title: "Terms of use",
+  summary:
+    "The practical ground rules for using Macky and requesting early access.",
+  lastUpdated: "August 4, 2026",
+  notice:
+    "Macky is in early access, so the experience will keep changing as more people use it and share what works.",
+  highlights: [
+    { title: "Early access", description: "Access may be limited, change over time, or be paused while Macky improves." },
+    { title: "You stay in control", description: "You choose the requests, permissions, and accounts Macky can work with." },
+    { title: "Connected services have their own terms", description: "The platforms you connect set their own rules, availability, and pricing." },
+  ],
+  sections: [
+    {
+      title: "Using Macky",
+      paragraphs: [
+        "Macky is a macOS voice assistant. It can respond through audio and help with supported actions on your Mac or in the apps you choose to connect.",
+        "These terms apply to the Macky website, early-access requests, and the Macky service you use.",
+      ],
+    },
+    {
+      title: "Responsible use",
+      paragraphs: [
+        "You are responsible for the requests you make, the information you provide, the accounts you connect, and the actions you approve. Use Macky only with permissions and content you are allowed to use.",
+        "Review any action that can affect messages, files, records, settings, or connected accounts before asking Macky to take it.",
+      ],
+    },
+    {
+      title: "Permissions and third-party services",
+      paragraphs: [
+        "Some features require macOS permissions, including Microphone, Accessibility, Screen Recording, Calendar, or Reminders access. You can revoke these permissions in macOS Settings, though the related feature may stop working.",
+        "Macky can rely on third-party services for realtime inference, authentication, analytics, and connected-app actions. Their availability, pricing, terms, and data practices follow their own policies.",
+      ],
+    },
+    {
+      title: "Changes and availability",
+      paragraphs: [
+        "Macky is growing quickly, so features, integrations, and access can change. Do not rely on a feature for a high-stakes workflow without checking it first.",
+        "To the extent allowed by law, Macky is provided as is, without a promise of uninterrupted operation, accuracy, security, compatibility, or fitness for a particular purpose.",
+      ],
+    },
+    {
+      title: "Early-access requests",
+      paragraphs: [
+        "Submitting your email requests early access; it does not guarantee a place or a particular date. If access becomes available, Macky may use the email you provided to contact you about it.",
+      ],
+    },
+  ],
+};

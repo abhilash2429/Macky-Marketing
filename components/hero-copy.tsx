@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { GitFork } from "lucide-react";
-import { sourceUrl } from "@/lib/content";
+import { ArrowUpRight } from "lucide-react";
 import { TextAnimate } from "@/registry/magicui/text-animate";
 
 export function HeroCopy() {
@@ -28,13 +27,13 @@ export function HeroCopy() {
         className="hero-description"
         onAnimationComplete={() => setIsDescriptionComplete(true)}
       >
-        {`Macky stays quietly in your Mac's notch, ready when you need a hand.
+        {`Macky lives quietly in your Mac's notch until you need a hand.
 Hold a key, say what you need, and it gets to work across your apps.
-No extra windows, no broken focus, and no need to pause your flow.`}
+No extra windows. No broken focus. Just back to what you were doing.`}
       </TextAnimate>
       <div className={`hero-actions${isDescriptionComplete ? " is-visible" : ""}`} aria-hidden={!isDescriptionComplete}>
-        <a className="button button-dark" href={sourceUrl} target="_blank" rel="noreferrer" tabIndex={isDescriptionComplete ? 0 : -1}>
-          <GitFork size={18} /> Get Macky for macOS
+        <a className="button button-dark" href="/waitlist" tabIndex={isDescriptionComplete ? 0 : -1}>
+          Request early access <ArrowUpRight size={18} />
         </a>
       </div>
     </div>

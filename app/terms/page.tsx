@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/legal-page";
-import { termsSections } from "@/lib/content";
+import { termsDocument } from "@/lib/content";
 
-export const metadata: Metadata = { title: "Terms of service" };
+export const metadata: Metadata = { title: "Terms of use" };
 
 export default function TermsPage() {
-  return <LegalPage title="Terms of service" sections={termsSections} />;
+  return <LegalPage document={termsDocument} />;
 }

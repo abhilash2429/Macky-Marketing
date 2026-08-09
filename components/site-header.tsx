@@ -7,10 +7,10 @@ import { MackyLogo } from "@/components/macky-logo";
 import { notchPath } from "@/components/notch-shape";
 
 const navigation = [
-  { label: "How it works", href: "/#how-it-works" },
-  { label: "Capabilities", href: "/#capabilities" },
-  { label: "Memory & agents", href: "/#memory-agents" },
-  { label: "FAQ", href: "/#faq" },
+  { label: "How it works", href: "/#how-it-works", id: "how-it-works" },
+  { label: "Capabilities", href: "/#capabilities", id: "capabilities" },
+  { label: "Memory & agents", href: "/#memory-agents", id: "memory-agents" },
+  { label: "FAQ", href: "/#faq", id: "faq" },
 ];
 
 /**
@@ -58,23 +58,59 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [isCompact, setIsCompact] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+  const lockedSectionRef = useRef<string | null>(null);
+  const unlockTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
+    const sectionIds = navigation.map((item) => item.id);
+
+    const resolveActiveSection = () => {
+      const hero = document.getElementById("hero");
+      if (!hero) return null;
+
+      const collapseAt = Math.min(120, hero.offsetHeight * 0.12);
+      if (window.scrollY < collapseAt) return null;
+
+      const marker = window.scrollY + 96;
+      let current: string | null = null;
+
+      for (const id of sectionIds) {
+        const section = document.getElementById(id);
+        if (!section) continue;
+        if (section.offsetTop <= marker) current = id;
+      }
+
+      return current;
+    };
+
     const handleScroll = () => {
       const hero = document.getElementById("hero");
       if (!hero) {
         setIsCompact(false);
+        setActiveSection(null);
         return;
       }
 
       // Collapse shortly after leaving the top of the hero — keep compact for the rest of the page.
       const collapseAt = Math.min(120, hero.offsetHeight * 0.12);
       setIsCompact(window.scrollY > collapseAt);
+
+      // While animating to a clicked section, keep that highlight only — skip intermediates.
+      if (lockedSectionRef.current) {
+        setActiveSection(lockedSectionRef.current);
+        return;
+      }
+
+      setActiveSection(resolveActiveSection());
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (unlockTimerRef.current) window.clearTimeout(unlockTimerRef.current);
+    };
   }, []);
 
   useEffect(() => {
@@ -87,6 +123,18 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
   const closeMenu = () => {
     setIsOpen(false);
     if (isOpen) setIsClosing(true);
+  };
+
+  const selectSection = (id: string) => {
+    lockedSectionRef.current = id;
+    setActiveSection(id);
+    closeMenu();
+
+    if (unlockTimerRef.current) window.clearTimeout(unlockTimerRef.current);
+    unlockTimerRef.current = window.setTimeout(() => {
+      lockedSectionRef.current = null;
+      unlockTimerRef.current = null;
+    }, 900);
   };
 
   const toggleMenu = () => {
@@ -114,7 +162,17 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
         </Link>
 
         <div className="desktop-nav">
-          {navigation.map((item) => <Link key={item.label} href={item.href}>{item.label}</Link>)}
+          {navigation.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              className={activeSection === item.id ? "is-active" : undefined}
+              aria-current={activeSection === item.id ? "true" : undefined}
+              onClick={() => selectSection(item.id)}
+            >
+              {item.label}
+            </Link>
+          ))}
           <Link className="nav-download" href="/waitlist" aria-hidden={isCompact} tabIndex={isCompact ? -1 : undefined}>
             Early access <ArrowUpRight size={14} />
           </Link>
@@ -134,7 +192,15 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
         {(isOpen || isClosing) && (
           <div id="mobile-navigation" className={`mobile-nav ${isOpen ? "is-open" : "is-closing"}`} aria-hidden={!isOpen}>
             {navigation.map((item) => (
-              <Link key={item.label} href={item.href} onClick={closeMenu}>{item.label}</Link>
+              <Link
+                key={item.label}
+                href={item.href}
+                className={activeSection === item.id ? "is-active" : undefined}
+                aria-current={activeSection === item.id ? "true" : undefined}
+                onClick={() => selectSection(item.id)}
+              >
+                {item.label}
+              </Link>
             ))}
             <Link href="/waitlist" onClick={closeMenu}>Early access <ArrowUpRight size={14} /></Link>
           </div>

@@ -322,6 +322,22 @@
   white-space: nowrap;
 }
 
+.desktop-nav > a:not(.nav-download) {
+  color: rgba(255, 255, 255, .62);
+  opacity: 1;
+}
+
+.desktop-nav > a:not(.nav-download):hover,
+.desktop-nav > a:not(.nav-download).is-active {
+  color: var(--blue);
+  opacity: 1;
+}
+
+.mobile-nav a:not(:last-child):hover,
+.mobile-nav a:not(:last-child).is-active {
+  color: var(--blue);
+}
+
 .nav-download {
   min-height: 36px;
   padding: 0 16px;

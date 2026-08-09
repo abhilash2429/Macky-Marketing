@@ -225,9 +225,79 @@
   box-shadow: none;
   backdrop-filter: none;
   justify-content: flex-start;
-  gap: 46px;
+  gap: 0;
   isolation: isolate;
   pointer-events: auto;
+  transition: padding .55s var(--ease-out);
+}
+
+/* Keep brand/CTA in flow and collapse their width so the notch resizes smoothly. */
+.nav-shell .brand {
+  flex: 0 1 auto;
+  overflow: hidden;
+  max-width: 160px;
+  margin-right: 46px;
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    max-width .55s var(--ease-out),
+    margin-right .55s var(--ease-out),
+    opacity .4s var(--ease-out) .12s,
+    transform .5s var(--ease-out);
+}
+
+.nav-shell .nav-download {
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 180px;
+  margin-left: 0;
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    max-width .55s var(--ease-out),
+    margin-left .55s var(--ease-out),
+    padding .55s var(--ease-out),
+    min-height .55s var(--ease-out),
+    opacity .4s var(--ease-out) .12s,
+    transform .5s var(--ease-out),
+    background-color .2s ease,
+    color .2s ease;
+}
+
+.nav-shell.is-compact {
+  padding-left: 22px;
+  padding-right: 22px;
+}
+
+.nav-shell.is-compact .brand {
+  max-width: 0;
+  margin-right: 0;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-8px);
+  transition:
+    opacity .28s ease,
+    transform .35s var(--ease-out),
+    max-width .55s var(--ease-out) .06s,
+    margin-right .55s var(--ease-out) .06s;
+}
+
+.nav-shell.is-compact .nav-download {
+  max-width: 0;
+  min-width: 0;
+  min-height: 0;
+  margin-left: -24px; /* cancel .desktop-nav gap */
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(8px);
+  transition:
+    opacity .28s ease,
+    transform .35s var(--ease-out),
+    max-width .55s var(--ease-out) .06s,
+    margin-left .55s var(--ease-out) .06s,
+    padding .55s var(--ease-out) .06s,
+    min-height .55s var(--ease-out) .06s;
 }
 
 .nav-shell > .brand,
@@ -456,6 +526,14 @@ body {
 @media (max-width: 900px) {
   .site-header { padding: 0 14px; }
   .nav-shell { width: min(100%, 440px); gap: 0; justify-content: space-between; }
+  .nav-shell .brand { margin-right: 0; }
+  .nav-shell.is-compact {
+    width: fit-content;
+    min-width: 52px;
+    justify-content: center;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
   .mobile-nav { top: calc(100% + 10px); }
   .pill-cloud { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .pill-cloud span,

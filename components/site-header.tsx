@@ -57,16 +57,19 @@ function NavShellShape() {
 export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const [isHidden, setIsHidden] = useState(false);
+  const [isCompact, setIsCompact] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      const section2 = document.getElementById("how-it-works");
-      let threshold = window.innerHeight * 1.4;
-      if (section2) {
-        threshold = section2.offsetTop + section2.offsetHeight - 80;
+      const hero = document.getElementById("hero");
+      if (!hero) {
+        setIsCompact(false);
+        return;
       }
-      setIsHidden(window.scrollY > threshold);
+
+      // Collapse shortly after leaving the top of the hero — keep compact for the rest of the page.
+      const collapseAt = Math.min(120, hero.offsetHeight * 0.12);
+      setIsCompact(window.scrollY > collapseAt);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -98,18 +101,21 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
   };
 
   return (
-    <header className={`site-header${isHidden ? " is-hidden" : ""}`}>
-      <nav className={`nav-shell${deferEntrance ? " nav-shell-delayed" : ""}`} aria-label="Main navigation">
+    <header className="site-header">
+      <nav
+        className={`nav-shell${deferEntrance ? " nav-shell-delayed" : ""}${isCompact ? " is-compact" : ""}`}
+        aria-label="Main navigation"
+      >
         <NavShellShape />
 
-        <Link className="brand" href="/#hero" onClick={closeMenu}>
+        <Link className="brand" href="/#hero" onClick={closeMenu} aria-hidden={isCompact} tabIndex={isCompact ? -1 : undefined}>
           <MackyLogo size={26} loading="eager" />
           <span>Macky</span>
         </Link>
 
         <div className="desktop-nav">
           {navigation.map((item) => <Link key={item.label} href={item.href}>{item.label}</Link>)}
-          <Link className="nav-download" href="/waitlist">
+          <Link className="nav-download" href="/waitlist" aria-hidden={isCompact} tabIndex={isCompact ? -1 : undefined}>
             Early access <ArrowUpRight size={14} />
           </Link>
         </div>

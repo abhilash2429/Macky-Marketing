@@ -32,7 +32,13 @@ Hold a key, say what you need, and it gets to work across your apps.
 No extra windows. No broken focus. Just back to what you were doing.`}
       </TextAnimate>
       <div className={`hero-actions${isDescriptionComplete ? " is-visible" : ""}`} aria-hidden={!isDescriptionComplete}>
-        <a className="button button-dark" href="/waitlist" tabIndex={isDescriptionComplete ? 0 : -1}>
+        <a
+          className="button button-dark"
+          href="/waitlist"
+          target="_blank"
+          rel="noopener noreferrer"
+          tabIndex={isDescriptionComplete ? 0 : -1}
+        >
           Request early access <ArrowUpRight size={18} />
         </a>
       </div>

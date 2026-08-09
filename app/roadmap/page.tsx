@@ -47,7 +47,9 @@ export default function RoadmapPage() {
           <span className="eyebrow">What comes next</span>
           <h1>Roadmap</h1>
           <p>What works today, what comes next, and which ideas are still being shaped.</p>
-          <a className="button button-dark" href="/waitlist">Request early access <ArrowUpRight size={17} /></a>
+          <a className="button button-dark" href="/waitlist" target="_blank" rel="noopener noreferrer">
+            Request early access <ArrowUpRight size={17} />
+          </a>
         </section>
         <section className="roadmap-board">
           {roadmapColumns.map(({ title, icon: Icon, items }) => (

@@ -13,43 +13,44 @@ const navigation = [
   { label: "FAQ", href: "/#faq", id: "faq" },
 ];
 
+const COMPACT_ON = 120;
+const COMPACT_OFF = 48;
+
 /**
- * Paints the nav bar as the notch silhouette: flat top edge, top corners
- * curving inward, bottom corners flaring outward. Measured rather than
- * scaled so the corner radii stay circular at any width.
+ * Paints the nav bar as the notch silhouette. Updates the path directly on
+ * resize so the morph stays in sync with the CSS width animation.
  */
 function NavShellShape() {
   const ref = useRef<SVGSVGElement | null>(null);
-  const [box, setBox] = useState({ width: 0, height: 0 });
+  const pathRef = useRef<SVGPathElement | null>(null);
 
   useEffect(() => {
     const nav = ref.current?.parentElement;
     if (!nav) return;
 
-    const observer = new ResizeObserver(([entry]) => {
-      const border = entry.borderBoxSize?.[0];
-      const width = border ? border.inlineSize : entry.contentRect.width;
-      const height = border ? border.blockSize : entry.contentRect.height;
-      setBox({ width, height });
-    });
+    const OVERHANG = 22;
 
+    const paint = (entry: ResizeObserverEntry) => {
+      const border = entry.borderBoxSize?.[0];
+      const contentWidth = border ? border.inlineSize : entry.contentRect.width;
+      const height = border ? border.blockSize : entry.contentRect.height;
+      const width = contentWidth + OVERHANG * 2;
+      const svg = ref.current;
+      const path = pathRef.current;
+      if (!svg || !path || contentWidth <= 0) return;
+
+      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+      path.setAttribute("d", notchPath(width, height, OVERHANG, 20));
+    };
+
+    const observer = new ResizeObserver(([entry]) => paint(entry));
     observer.observe(nav);
     return () => observer.disconnect();
   }, []);
 
-  const OVERHANG = 22;
-  const width = box.width + OVERHANG * 2;
-  const height = box.height;
-  const path = box.width > 0 ? notchPath(width, height, OVERHANG, 20) : "";
-
   return (
-    <svg
-      ref={ref}
-      className="nav-shell-shape"
-      viewBox={`0 0 ${width} ${height}`}
-      aria-hidden="true"
-    >
-      {path && <path d={path} fill="#000" />}
+    <svg ref={ref} className="nav-shell-shape" aria-hidden="true">
+      <path ref={pathRef} fill="#000" />
     </svg>
   );
 }
@@ -59,44 +60,58 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
   const [isClosing, setIsClosing] = useState(false);
   const [isCompact, setIsCompact] = useState(false);
   const [activeSection, setActiveSection] = useState<string | null>(null);
+  const [brandWidth, setBrandWidth] = useState(0);
+  const [ctaWidth, setCtaWidth] = useState(0);
+  const brandInnerRef = useRef<HTMLAnchorElement | null>(null);
+  const ctaInnerRef = useRef<HTMLAnchorElement | null>(null);
   const lockedSectionRef = useRef<string | null>(null);
   const unlockTimerRef = useRef<number | null>(null);
+  const compactRef = useRef(false);
+
+  useEffect(() => {
+    const measure = () => {
+      if (brandInnerRef.current) setBrandWidth(brandInnerRef.current.scrollWidth);
+      if (ctaInnerRef.current) setCtaWidth(ctaInnerRef.current.scrollWidth);
+    };
+
+    measure();
+    document.fonts?.ready.then(measure).catch(() => undefined);
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
 
   useEffect(() => {
     const sectionIds = navigation.map((item) => item.id);
 
     const resolveActiveSection = () => {
-      const hero = document.getElementById("hero");
-      if (!hero) return null;
-
-      const collapseAt = Math.min(120, hero.offsetHeight * 0.12);
-      if (window.scrollY < collapseAt) return null;
+      if (window.scrollY < COMPACT_OFF) return null;
 
       const marker = window.scrollY + 96;
       let current: string | null = null;
+      let foundSection = false;
 
       for (const id of sectionIds) {
         const section = document.getElementById(id);
         if (!section) continue;
+        foundSection = true;
         if (section.offsetTop <= marker) current = id;
       }
 
-      return current;
+      // Only highlight on pages that have landing sections (e.g. home).
+      return foundSection ? current : null;
     };
 
     const handleScroll = () => {
-      const hero = document.getElementById("hero");
-      if (!hero) {
-        setIsCompact(false);
-        setActiveSection(null);
-        return;
+      // Hysteresis keeps the morph from flickering at the threshold — same on every page.
+      const nextCompact = compactRef.current
+        ? window.scrollY > COMPACT_OFF
+        : window.scrollY > COMPACT_ON;
+
+      if (nextCompact !== compactRef.current) {
+        compactRef.current = nextCompact;
+        setIsCompact(nextCompact);
       }
 
-      // Collapse shortly after leaving the top of the hero — keep compact for the rest of the page.
-      const collapseAt = Math.min(120, hero.offsetHeight * 0.12);
-      setIsCompact(window.scrollY > collapseAt);
-
-      // While animating to a clicked section, keep that highlight only — skip intermediates.
       if (lockedSectionRef.current) {
         setActiveSection(lockedSectionRef.current);
         return;
@@ -156,10 +171,22 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
       >
         <NavShellShape />
 
-        <Link className="brand" href="/#hero" onClick={closeMenu} aria-hidden={isCompact} tabIndex={isCompact ? -1 : undefined}>
-          <MackyLogo size={26} loading="eager" />
-          <span>Macky</span>
-        </Link>
+        <div
+          className="nav-collapse nav-collapse-brand"
+          style={{ width: isCompact ? 0 : brandWidth || undefined }}
+        >
+          <Link
+            ref={brandInnerRef}
+            className="brand"
+            href="/#hero"
+            onClick={closeMenu}
+            aria-hidden={isCompact}
+            tabIndex={isCompact ? -1 : undefined}
+          >
+            <MackyLogo size={26} loading="eager" />
+            <span>Macky</span>
+          </Link>
+        </div>
 
         <div className="desktop-nav">
           {navigation.map((item) => (
@@ -173,9 +200,22 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
               {item.label}
             </Link>
           ))}
-          <Link className="nav-download" href="/waitlist" aria-hidden={isCompact} tabIndex={isCompact ? -1 : undefined}>
-            Early access <ArrowUpRight size={14} />
-          </Link>
+          <div
+            className="nav-collapse nav-collapse-cta"
+            style={{ width: isCompact ? 0 : ctaWidth || undefined }}
+          >
+            <Link
+              ref={ctaInnerRef}
+              className="nav-download"
+              href="/waitlist"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-hidden={isCompact}
+              tabIndex={isCompact ? -1 : undefined}
+            >
+              Early access <ArrowUpRight size={14} />
+            </Link>
+          </div>
         </div>
 
         <button
@@ -202,7 +242,9 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
                 {item.label}
               </Link>
             ))}
-            <Link href="/waitlist" onClick={closeMenu}>Early access <ArrowUpRight size={14} /></Link>
+            <Link href="/waitlist" target="_blank" rel="noopener noreferrer" onClick={closeMenu}>
+              Early access <ArrowUpRight size={14} />
+            </Link>
           </div>
         )}
       </nav>

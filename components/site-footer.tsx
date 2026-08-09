@@ -34,7 +34,7 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="footer-brand">
         <h2>Voice in.<span>Action out.</span></h2>
-        <Link className="button button-light" href="/waitlist">
+        <Link className="button button-light" href="/waitlist" target="_blank" rel="noopener noreferrer">
           Request early access <ArrowUpRight size={17} />
         </Link>
       </div>

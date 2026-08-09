@@ -16,7 +16,7 @@ const reasonsToJoin = [
 
 export default function WaitlistPage() {
   return (
-    <PageShell>
+    <PageShell hideHeader>
       <main className="waitlist-page">
         <section className="waitlist-layout">
           <div className="waitlist-copy">

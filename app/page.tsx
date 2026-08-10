@@ -12,12 +12,12 @@ import {
   Workflow,
 } from "lucide-react";
 import { FAQList } from "@/components/faq-list";
+import { CapabilityFeatures } from "@/components/capability-features";
 import { HeroCopy } from "@/components/hero-copy";
-import { LazyVideo } from "@/components/lazy-video";
 import { MackyLogo } from "@/components/macky-logo";
 import { PageShell } from "@/components/page-shell";
 import { Reveal } from "@/components/reveal";
-import { capabilityVideos, connectors, nextCapabilities } from "@/lib/content";
+import { connectors, nextCapabilities } from "@/lib/content";
 
 const howSteps = [
   {
@@ -123,27 +123,10 @@ export default function HomePage() {
         </section>
 
         <section className="feature-stack section" id="capabilities">
-          {capabilityVideos.map((feature, index) => (
-            <Reveal className="feature-reveal" delay={Math.min(index * 60, 240)} key={feature.title}>
-              <article className={`feature-row ${index % 2 ? "feature-row-reverse" : ""}`}>
-                <div className="feature-copy">
-                  <span className="feature-number">0{index + 1} · {feature.label}</span>
-                  <h3>{feature.title}</h3>
-                  <p>{feature.description}</p>
-                </div>
-                <div className="video-frame"><LazyVideo src={feature.video} /></div>
-              </article>
-            </Reveal>
-          ))}
-        </section>
-
-        <section className="section quote-section">
-          <div className="quote-mark">&ldquo;</div>
-          <blockquote>Hold a key. Say what you need. Macky gets it done without turning your workflow into another chat window.</blockquote>
-          <div className="quote-author">
-            <MackyLogo size={48} glow />
-            <div><strong>Macky</strong><span>Voice in. Action out.</span></div>
+          <div className="section-heading centered how-heading capabilities-heading">
+            <span className="eyebrow">What Macky can do</span>
           </div>
+          <CapabilityFeatures />
         </section>
 
         <section className="section organization-grid" id="memory-agents">

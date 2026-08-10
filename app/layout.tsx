@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
-import { Fragment_Mono, Instrument_Serif, Inter } from "next/font/google";
+import { DM_Sans, Fragment_Mono, Instrument_Serif, Inter } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-dm-sans",
+  display: "swap",
+});
 const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
   weight: "400",
@@ -25,7 +31,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${instrumentSerif.variable} ${fragmentMono.variable}`}>{children}</body>
+      <body className={`${inter.variable} ${dmSans.variable} ${instrumentSerif.variable} ${fragmentMono.variable}`}>
+        {children}
+      </body>
     </html>
   );
 }

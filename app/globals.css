@@ -17,7 +17,7 @@
 @media(max-width:620px){.site-header{top:10px;padding:0 10px}.nav-shell{height:56px;border-radius:16px}.section{width:min(100% - 28px,1180px);padding:85px 0}.hero{min-height:830px;padding-top:120px}.hero h1{font-size:61px}.hero h1 em{margin-top:18px}.hero-copy>p{font-size:15px}.hero-facts{flex-direction:column;gap:4px}.hero-landscape{height:310px}.desktop-clock{display:none}.clipboard-shelf{left:18px;right:18px;bottom:22px;height:220px;padding:14px;border-radius:22px}.shelf-tabs{overflow:hidden;margin:13px 0}.shelf-tabs span,.shelf-tabs strong,.shelf-tabs b{padding:8px 11px;font-size:11px}.clip-row{grid-template-columns:repeat(5,118px)}.clip-card{height:93px}.section-heading h2,.subpage-hero h1,.legal-page h1{font-size:clamp(32px,9vw,40px)}.section-heading p{font-size:16px}.feature-row{padding:48px 0}.video-frame{border-radius:20px}.organization-card{min-height:520px;padding:28px}.organization-card h3{font-size:35px}.audience-grid{grid-template-columns:1fr}.connector-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.pricing-section{padding:90px 14px}.pricing-card{padding:25px}.price-top{flex-direction:column}.faq-section{gap:10px}.cooldock-card{padding:34px 25px}.dock-preview{min-height:240px;gap:6px}.dock-widget{width:60px;height:60px;border-radius:16px}.site-footer{margin:0 8px 8px;padding:45px 26px 24px;border-radius:26px}.footer-directory{grid-template-columns:1fr 1fr}.footer-links:last-child{grid-column:1/-1}.footer-bottom{flex-direction:column;gap:10px}.update-card{grid-template-columns:1fr;gap:10px}.release-note,.legal-page article{padding:28px 22px}.subpage,.roadmap-page,.article-page,.legal-page{padding-top:130px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
-/* Hero background uses the supplied soft landscape with animated entrance & subtle float. */
+/* Hero background — static on all devices */
 .hero { background: transparent; position: relative; overflow: visible; }
 .hero-bg {
   position: absolute;
@@ -29,35 +29,11 @@
   background: url('/assets/hero-background.png') center top / cover no-repeat;
   pointer-events: none;
   opacity: 1;
-  animation: hero-bg-entrance 1.8s cubic-bezier(0.16, 1, 0.3, 1) both, hero-bg-float 22s ease-in-out 1.8s infinite alternate;
-  will-change: transform, filter, opacity;
+  animation: none;
+  transform: none;
+  filter: none;
   mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%);
   -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%);
-}
-
-@keyframes hero-bg-entrance {
-  0% {
-    transform: scale(1.05) translateY(-8px);
-    opacity: 0;
-    filter: blur(12px);
-  }
-  100% {
-    transform: scale(1) translateY(0);
-    opacity: 1;
-    filter: blur(0);
-  }
-}
-
-@keyframes hero-bg-float {
-  0% {
-    transform: scale(1) translateY(0);
-  }
-  50% {
-    transform: scale(1.038) translateY(-12px);
-  }
-  100% {
-    transform: scale(1) translateY(0);
-  }
 }
 
 .hero-copy{color:#111827}

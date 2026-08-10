@@ -1,14 +1,56 @@
 "use client";
 
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import { ArrowUpRight, Check } from "lucide-react";
 
 type SubmissionState = "idle" | "submitting" | "success" | "error";
 
+const TYPEWRITER_SAMPLE = "you@company.com";
+const TYPEWRITER_MS = 48;
+
 export function WaitlistForm() {
   const [email, setEmail] = useState("");
+  const [placeholder, setPlaceholder] = useState("");
   const [submissionState, setSubmissionState] = useState<SubmissionState>("idle");
   const [message, setMessage] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const typewriterRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    function clearTypewriter() {
+      if (typewriterRef.current !== null) {
+        window.clearInterval(typewriterRef.current);
+        typewriterRef.current = null;
+      }
+    }
+
+    function startTypewriter() {
+      if (email.trim()) {
+        inputRef.current?.focus();
+        return;
+      }
+
+      clearTypewriter();
+      setPlaceholder("");
+      inputRef.current?.focus();
+
+      let index = 0;
+      typewriterRef.current = window.setInterval(() => {
+        index += 1;
+        setPlaceholder(TYPEWRITER_SAMPLE.slice(0, index));
+        if (index >= TYPEWRITER_SAMPLE.length && typewriterRef.current !== null) {
+          window.clearInterval(typewriterRef.current);
+          typewriterRef.current = null;
+        }
+      }, TYPEWRITER_MS);
+    }
+
+    window.addEventListener("waitlist:typewriter", startTypewriter);
+    return () => {
+      window.removeEventListener("waitlist:typewriter", startTypewriter);
+      clearTypewriter();
+    };
+  }, [email]);
 
   async function submitWaitlistRequest(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -52,12 +94,17 @@ export function WaitlistForm() {
     <form className="waitlist-form" onSubmit={submitWaitlistRequest}>
       <label htmlFor="waitlist-email">Your email address</label>
       <input
+        ref={inputRef}
         id="waitlist-email"
         name="email"
         type="email"
         autoComplete="email"
         value={email}
-        onChange={(event) => setEmail(event.target.value)}
+        placeholder={placeholder}
+        onChange={(event) => {
+          setPlaceholder("");
+          setEmail(event.target.value);
+        }}
         required
       />
       <button className="button button-dark" type="submit" disabled={submissionState === "submitting"}>

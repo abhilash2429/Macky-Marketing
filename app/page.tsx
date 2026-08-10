@@ -9,7 +9,6 @@ import {
   Keyboard,
   MousePointer2,
   Network,
-  Sparkles,
   Workflow,
 } from "lucide-react";
 import { FAQList } from "@/components/faq-list";
@@ -20,16 +19,25 @@ import { PageShell } from "@/components/page-shell";
 import { Reveal } from "@/components/reveal";
 import { capabilityVideos, connectors, nextCapabilities } from "@/lib/content";
 
-const featurePills = [
-  "Talk naturally",
-  "Act in real time",
-  "Dictate with confidence",
-  "Screen-aware help",
-  "Control your Mac",
-  "Files in context",
-  "Connected workflows",
-  "Interrupt anytime",
-  "Stay in your flow",
+const howSteps = [
+  {
+    number: "01",
+    title: "Hold",
+    detail: "Press your shortcut and keep holding.",
+    visual: "hold" as const,
+  },
+  {
+    number: "02",
+    title: "Speak",
+    detail: "Say what you need in plain language.",
+    visual: "speak" as const,
+  },
+  {
+    number: "03",
+    title: "Done",
+    detail: "Macky acts. You stay where you were.",
+    visual: "done" as const,
+  },
 ];
 
 const nativeActions = [
@@ -52,15 +60,65 @@ export default function HomePage() {
 
         <section className="intro-section" id="how-it-works">
           <div className="section intro-content">
-          <div className="section-heading centered">
-            <span className="eyebrow"><Sparkles size={16} /> Made for the moment</span>
-            <h2>Your assistant, wherever you need.</h2>
-            <p>
-              Talk from any app, understand what is on screen when you ask, bring in files, dictate safely, and let
-              Macky handle supported Mac and cloud actions — all from the notch.
-            </p>
-          </div>
-          <div className="pill-cloud">{featurePills.map((pill) => <span key={pill}>{pill}</span>)}</div>
+            <div className="section-heading centered how-heading">
+              <span className="eyebrow">How it works</span>
+              <h2>From voice to action in three steps.</h2>
+              <p>Macky stays in the notch until you call it — then it gets out of the way.</p>
+            </div>
+
+            <div className="how-stage">
+              <div className="how-flow" aria-hidden="true">
+                <span className="how-flow-track" />
+                <span className="how-flow-pulse" />
+              </div>
+
+              <ol className="how-steps">
+                {howSteps.map((step, index) => (
+                  <li className="how-step-item" key={step.number}>
+                    <Reveal className="how-step-reveal" delay={index * 110}>
+                      <div className={`how-step is-${step.visual}`}>
+                        <span className="how-step-watermark" aria-hidden="true">
+                          {step.number}
+                        </span>
+
+                        <div className="how-step-visual" aria-hidden="true">
+                          {step.visual === "hold" && (
+                            <div className="how-keys">
+                              <kbd>⌃</kbd>
+                              <kbd>⌥</kbd>
+                            </div>
+                          )}
+                          {step.visual === "speak" && (
+                            <div className="how-notch">
+                              <span className="how-wave">
+                                <i /><i /><i /><i /><i /><i /><i />
+                              </span>
+                            </div>
+                          )}
+                          {step.visual === "done" && (
+                            <div className="how-done" aria-hidden="true">
+                              <svg className="how-done-check" viewBox="0 0 56 56" fill="none">
+                                <circle className="how-done-circle" cx="28" cy="28" r="24" />
+                                <path className="how-done-tick" d="M17.5 28.5L24.5 35.5L38.5 20.5" />
+                              </svg>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="how-step-copy">
+                          <span className="how-step-number">{step.number}</span>
+                          <h3>{step.title}</h3>
+                          {step.visual === "hold" && (
+                            <span className="sr-only">Control and Option</span>
+                          )}
+                          <p className="how-step-detail">{step.detail}</p>
+                        </div>
+                      </div>
+                    </Reveal>
+                  </li>
+                ))}
+              </ol>
+            </div>
           </div>
         </section>
 

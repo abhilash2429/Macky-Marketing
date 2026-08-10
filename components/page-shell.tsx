@@ -5,16 +5,18 @@ export function PageShell({
   children,
   deferHeaderEntrance = false,
   hideHeader = false,
+  hideFooter = false,
 }: {
   children: React.ReactNode;
   deferHeaderEntrance?: boolean;
   hideHeader?: boolean;
+  hideFooter?: boolean;
 }) {
   return (
     <>
       {!hideHeader && <SiteHeader deferEntrance={deferHeaderEntrance} />}
       {children}
-      <SiteFooter />
+      {!hideFooter && <SiteFooter />}
     </>
   );
 }

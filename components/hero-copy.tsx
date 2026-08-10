@@ -1,8 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import { TextAnimate } from "@/registry/magicui/text-animate";
+
+const descriptionLines = [
+  "Macky lives in your Mac's notch until you need a hand.",
+  "Hold Control + Option, say what you need, and it works across your apps.",
+  "No extra windows. Just back to what you were doing.",
+] as const;
 
 export function HeroCopy() {
   const [isDescriptionComplete, setIsDescriptionComplete] = useState(false);
@@ -10,27 +17,61 @@ export function HeroCopy() {
   return (
     <div className="hero-copy">
       <h1>
-        <TextAnimate animation="blurInUp" as="span" by="character" delay={0.65} duration={0.65} once>
+        <TextAnimate animation="blurInUp" as="span" by="character" delay={0.08} duration={0.35} once>
           Voice in.
         </TextAnimate>
-        <TextAnimate animation="blurInUp" as="span" by="character" delay={1.15} duration={0.65} once className="hero-title-script">
+        <TextAnimate animation="blurInUp" as="span" by="character" delay={0.32} duration={0.35} once className="hero-title-script">
           Action out.
         </TextAnimate>
       </h1>
-      <TextAnimate
-        animation="blurIn"
-        as="p"
-        by="line"
-        delay={2.25}
-        duration={0.6}
-        once
+      <motion.p
         className="hero-description"
-        onAnimationComplete={() => setIsDescriptionComplete(true)}
+        initial="hidden"
+        animate="show"
+        variants={{
+          hidden: {},
+          show: {
+            transition: { delayChildren: 0.7, staggerChildren: 0.12 },
+          },
+        }}
+        aria-label={descriptionLines.join(" ")}
       >
-        {`Macky lives quietly in your Mac's notch until you need a hand.
-Hold a key, say what you need, and it gets to work across your apps.
-No extra windows. No broken focus. Just back to what you were doing.`}
-      </TextAnimate>
+        <span className="sr-only">{descriptionLines.join(" ")}</span>
+        <motion.span
+          className="hero-description-line"
+          aria-hidden="true"
+          variants={{
+            hidden: { opacity: 0, filter: "blur(10px)", y: 8 },
+            show: { opacity: 1, filter: "blur(0px)", y: 0, transition: { duration: 0.35 } },
+          }}
+        >
+          {descriptionLines[0]}
+        </motion.span>
+        <motion.span
+          className="hero-description-line"
+          aria-hidden="true"
+          variants={{
+            hidden: { opacity: 0, filter: "blur(10px)", y: 8 },
+            show: { opacity: 1, filter: "blur(0px)", y: 0, transition: { duration: 0.35 } },
+          }}
+        >
+          Hold{" "}
+          <kbd className="hero-kbd" title="Control">⌃</kbd>
+          <kbd className="hero-kbd" title="Option">⌥</kbd>
+          , say what you need, and it works across your apps.
+        </motion.span>
+        <motion.span
+          className="hero-description-line"
+          aria-hidden="true"
+          variants={{
+            hidden: { opacity: 0, filter: "blur(10px)", y: 8 },
+            show: { opacity: 1, filter: "blur(0px)", y: 0, transition: { duration: 0.35 } },
+          }}
+          onAnimationComplete={() => setIsDescriptionComplete(true)}
+        >
+          {descriptionLines[2]}
+        </motion.span>
+      </motion.p>
       <div className={`hero-actions${isDescriptionComplete ? " is-visible" : ""}`} aria-hidden={!isDescriptionComplete}>
         <a
           className="button button-dark"

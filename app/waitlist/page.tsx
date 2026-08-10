@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { ArrowDown } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { WaitlistForm } from "@/components/waitlist-form";
+import { WaitlistSpotLink } from "@/components/waitlist-spot-link";
 
 export const metadata: Metadata = {
   title: "Request early access",
@@ -18,7 +18,7 @@ const formApps = [
 
 export default function WaitlistPage() {
   return (
-    <PageShell hideHeader>
+    <PageShell hideHeader hideFooter>
       <main className="waitlist-page">
         <section className="waitlist-layout">
           <div className="waitlist-copy">
@@ -27,7 +27,7 @@ export default function WaitlistPage() {
               Macky is a voice assistant that stays in your Mac&apos;s notch until you need a hand. Say what you need,
               then get back to what you were doing.
             </p>
-            <a className="waitlist-scroll" href="#waitlist-form">Request a spot <ArrowDown size={16} /></a>
+            <WaitlistSpotLink />
           </div>
 
           <div className="waitlist-form-stage">

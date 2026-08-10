@@ -543,7 +543,7 @@ main .section-heading {
 .memory-story {
   position: relative;
   z-index: 2;
-  padding: 110px 0 120px;
+  padding: 110px 0 64px;
   background:
     radial-gradient(ellipse 70% 55% at 90% 10%, rgba(8, 124, 255, .1), transparent 55%),
     radial-gradient(ellipse 50% 40% at 0% 90%, rgba(66, 186, 255, .08), transparent 50%),
@@ -706,7 +706,7 @@ main .section-heading {
 
 @media (max-width: 900px) {
   .memory-story {
-    padding: 80px 0 90px;
+    padding: 80px 0 48px;
   }
 
   .memory-story-inner {
@@ -806,7 +806,7 @@ main {
   font-style: italic;
   font-weight: 400;
   letter-spacing: -.04em;
-  color: #0b1220;
+  color: #087cff;
 }
 
 .how-stage {
@@ -1285,8 +1285,17 @@ body {
   line-height: 1.55;
 }
 
-.connector-showcase {
+main .section.connector-showcase {
+  padding-top: 28px;
   padding-bottom: 48px;
+}
+
+main .connector-showcase .section-heading {
+  margin-bottom: 28px;
+}
+
+main .connector-showcase .section-heading h2 {
+  margin-top: 0;
 }
 
 .connector-strip article {

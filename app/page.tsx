@@ -1,7 +1,6 @@
 import Image from "next/image";
 import {
   Keyboard,
-  Network,
 } from "lucide-react";
 import { FAQList } from "@/components/faq-list";
 import { CapabilityFeatures } from "@/components/capability-features";
@@ -118,46 +117,48 @@ export default function HomePage() {
             <header className="memory-story-hero">
               <span className="eyebrow">Memory</span>
               <h2>
-                Your memory that <em>closes open loops</em>
+                Remembers the stuff <em>you meant to finish</em>
               </h2>
               <p>
-                Most assistants forget the moment you let go of the key.
-                Macky keeps a personal memory you own — unfinished work,
-                decisions in flight, preferences that matter — so the next
-                voice turn already knows what still belongs on your plate.
+                Most assistants wipe the slate the second you let go.
+                Macky keeps the unfinished bits — the reply you owe,
+                the decision you almost made, the thread you said you’d
+                come back to — so the next time you speak, you’re not
+                starting from zero.
               </p>
             </header>
 
             <div className="memory-story-flow">
               <Reveal className="memory-beat" delay={0}>
                 <span className="memory-beat-num">01</span>
-                <h3>It finds what’s still open</h3>
+                <h3>It catches what you almost dropped</h3>
                 <p>
-                  A follow-up you meant to send. A half-decision from yesterday.
-                  A thread that never quite landed. Macky surfaces the high-value
-                  open loops from your sessions — not as a chat archive you dig through,
-                  but as living work that still needs a hand.
+                  That email you meant to send. The call you said you’d make.
+                  The idea that never quite landed. Macky keeps those close —
+                  not buried in old chat, but sitting where you can still
+                  do something about them.
                 </p>
               </Reveal>
 
               <Reveal className="memory-beat" delay={80}>
                 <span className="memory-beat-num">02</span>
-                <h3>Then it helps close them</h3>
+                <h3>Then it helps you wrap them up</h3>
                 <p>
-                  Memory isn’t a scrapbook. It traces what changed, what you decided,
-                  and what’s left unfinished — then carries that forward until the loop
-                  actually resolves. Context-switch freely. Macky doesn’t drop what
-                  should still be on your plate.
+                  This isn’t a scrapbook of everything you’ve ever said.
+                  It remembers what changed, what you chose, and what’s
+                  still hanging — then brings it back until it’s actually done.
+                  Jump between things freely. Macky won’t lose the ones
+                  that still matter.
                 </p>
               </Reveal>
 
               <Reveal className="memory-beat" delay={160}>
                 <span className="memory-beat-num">03</span>
-                <h3>It stays on your Mac</h3>
+                <h3>It lives on your Mac</h3>
                 <p>
-                  Your memory lives on-device. Preferences, project state, open loops —
-                  reviewable, removable, yours. No silent cloud diary of your work life.
-                  Nothing remembered unless it earns its place, and nothing you can’t erase.
+                  Your preferences, projects, and unfinished work stay with you —
+                  easy to check, easy to delete. No quiet cloud diary of your day.
+                  If something shouldn’t be remembered, you can clear it.
                 </p>
               </Reveal>
             </div>
@@ -165,48 +166,35 @@ export default function HomePage() {
             <Reveal className="memory-handoff" delay={80}>
               <div className="memory-handoff-copy">
                 <span className="eyebrow">Sub-agents</span>
-                <h3>When closing a loop takes more than a breath</h3>
+                <h3>When finishing takes more than a quick ask</h3>
                 <p>
-                  Some loops need research. Some need a follow-up across apps.
-                  Some need a bounded chore you shouldn’t babysit. Macky keeps you
-                  in the notch — the place you speak and decide — and hands the messy
-                  middle to focused sub-agents. They work the piece. You get the result.
-                  The loop can finally close.
+                  Sometimes you need research. Sometimes a chase across apps.
+                  Sometimes a chore you shouldn’t sit and watch. Macky keeps
+                  you in the notch — where you talk and decide — and hands
+                  the messy middle to focused helpers. They do the dig.
+                  You get the answer. Then you can move on.
                 </p>
               </div>
               <ul className="memory-handoff-list">
                 <li>
                   <strong>Research</strong>
-                  <span>Pull context, compare options, bring back a clear answer.</span>
+                  <span>Look things up, weigh the options, bring back a clear take.</span>
                 </li>
                 <li>
                   <strong>Follow-ups</strong>
-                  <span>Chase the thread you opened without losing the thread you’re in.</span>
+                  <span>Chase that thread without losing the one you’re in now.</span>
                 </li>
                 <li>
                   <strong>App work</strong>
-                  <span>Bounded actions in the tools you already use — then report home.</span>
+                  <span>Handle a small job in the tools you already use — then come back.</span>
                 </li>
               </ul>
             </Reveal>
-
-            <div className="memory-ownership">
-              <p>
-                <strong>Stored on your Mac.</strong> Your memory isn’t trapped in someone else’s model.
-              </p>
-              <p>
-                <strong>Visible when you want it.</strong> See what’s remembered. Delete what shouldn’t be.
-              </p>
-              <p>
-                <strong>Built to finish work.</strong> Not to collect notes — to close the loop.
-              </p>
-            </div>
           </div>
         </section>
 
         <section className="section connector-showcase">
           <div className="section-heading centered">
-            <span className="eyebrow"><Network size={16} /> Connected when you choose</span>
             <h2>Your apps, one voice away.</h2>
           </div>
           <div className="connector-strip">

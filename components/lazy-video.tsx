@@ -4,14 +4,22 @@ import { useEffect, useRef, useState } from "react";
 
 type LazyVideoProps = {
   src: string;
+  poster?: string;
   className?: string;
   /** Eagerly warm the first paint for early rows */
   priority?: boolean;
+  /** Only the active capability row should decode/play */
+  active?: boolean;
 };
 
-export function LazyVideo({ src, className, priority = false }: LazyVideoProps) {
+export function LazyVideo({
+  src,
+  poster,
+  className,
+  priority = false,
+  active = false,
+}: LazyVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
   const [shouldLoad, setShouldLoad] = useState(priority);
   const [isReady, setIsReady] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -25,29 +33,21 @@ export function LazyVideo({ src, className, priority = false }: LazyVideoProps) 
     updateMotionPreference();
     motionQuery.addEventListener("change", updateMotionPreference);
 
-    // Fetch well before the card enters view so the first frame is ready.
+    // Warm nearby videos only — avoid fetching the whole page of media at once.
     const loadObserver = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setShouldLoad(true);
-          loadObserver.disconnect();
-        }
+        if (!entry.isIntersecting) return;
+        setShouldLoad(true);
+        loadObserver.disconnect();
       },
-      { rootMargin: "800px 0px", threshold: 0 },
-    );
-
-    const playObserver = new IntersectionObserver(
-      ([entry]) => setIsVisible(entry.isIntersecting),
-      { rootMargin: "80px 0px", threshold: 0.15 },
+      { rootMargin: "280px 0px", threshold: 0.01 },
     );
 
     loadObserver.observe(video);
-    playObserver.observe(video);
 
     return () => {
       motionQuery.removeEventListener("change", updateMotionPreference);
       loadObserver.disconnect();
-      playObserver.disconnect();
     };
   }, []);
 
@@ -77,25 +77,39 @@ export function LazyVideo({ src, className, priority = false }: LazyVideoProps) 
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !shouldLoad || !isReady) return;
+    if (!video || !shouldLoad) return;
 
-    if (isVisible && !prefersReducedMotion) {
+    if (active && !prefersReducedMotion) {
       void video.play().catch(() => undefined);
     } else {
       video.pause();
     }
-  }, [isVisible, prefersReducedMotion, shouldLoad, isReady]);
+  }, [active, prefersReducedMotion, shouldLoad, isReady]);
 
   return (
-    <video
-      ref={videoRef}
-      className={`lazy-video${isReady ? " is-ready" : ""}${className ? ` ${className}` : ""}`}
-      src={shouldLoad ? src : undefined}
-      muted
-      loop
-      playsInline
-      preload={shouldLoad || priority ? "auto" : "none"}
-      aria-hidden="true"
-    />
+    <div className={`lazy-video-shell${isReady ? " is-ready" : ""}${className ? ` ${className}` : ""}`}>
+      {poster ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          className="lazy-video-poster"
+          src={poster}
+          alt=""
+          decoding="async"
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : "auto"}
+        />
+      ) : null}
+      <video
+        ref={videoRef}
+        className="lazy-video"
+        src={shouldLoad ? src : undefined}
+        poster={poster}
+        muted
+        loop
+        playsInline
+        preload={shouldLoad ? "metadata" : "none"}
+        aria-hidden="true"
+      />
+    </div>
   );
 }

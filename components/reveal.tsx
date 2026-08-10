@@ -11,29 +11,40 @@ type RevealProps = {
 
 export function Reveal({ children, className = "", delay = 0 }: RevealProps) {
   const revealRef = useRef<HTMLDivElement>(null);
-  const [visibility, setVisibility] = useState<"initial" | "hidden" | "visible">("initial");
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const node = revealRef.current;
     if (!node) return;
 
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (motionQuery.matches) return;
+    if (motionQuery.matches) {
+      setIsVisible(true);
+      return;
+    }
 
+    // Reveal once — re-hiding on scroll-out causes janky fade loops.
     const observer = new IntersectionObserver(
-      ([entry]) => setVisibility(entry.isIntersecting ? "visible" : "hidden"),
-      { rootMargin: "0px 0px -10% 0px", threshold: 0.08 },
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setIsVisible(true);
+        observer.disconnect();
+      },
+      { rootMargin: "0px 0px -8% 0px", threshold: 0.12 },
     );
 
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
 
-  const isVisible = visibility !== "hidden";
   const style = { "--reveal-delay": `${delay}ms` } as CSSProperties;
 
   return (
-    <div ref={revealRef} className={`reveal ${isVisible ? "is-visible" : "is-hidden"} ${className}`} style={style}>
+    <div
+      ref={revealRef}
+      className={`reveal ${isVisible ? "is-visible" : "is-hidden"} ${className}`}
+      style={style}
+    >
       {children}
     </div>
   );

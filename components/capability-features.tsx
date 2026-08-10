@@ -21,24 +21,32 @@ export function CapabilityFeatures() {
     const rows = Array.from(document.querySelectorAll<HTMLElement>("[data-capability-row]"));
     if (!rows.length) return;
 
+    let frame = 0;
+
     const updateActive = () => {
+      frame = 0;
       const marker = window.innerHeight * 0.42;
       let current = 0;
 
-      rows.forEach((row, index) => {
-        const top = row.getBoundingClientRect().top;
-        if (top <= marker) current = index;
-      });
+      for (let index = 0; index < rows.length; index += 1) {
+        if (rows[index].getBoundingClientRect().top <= marker) current = index;
+      }
 
-      setActiveIndex(current);
+      setActiveIndex((prev) => (prev === current ? prev : current));
+    };
+
+    const onScroll = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(updateActive);
     };
 
     updateActive();
-    window.addEventListener("scroll", updateActive, { passive: true });
-    window.addEventListener("resize", updateActive);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
     return () => {
-      window.removeEventListener("scroll", updateActive);
-      window.removeEventListener("resize", updateActive);
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
     };
   }, []);
 
@@ -113,7 +121,12 @@ export function CapabilityFeatures() {
                 <p>{feature.description}</p>
               </div>
               <div className="video-frame">
-                <LazyVideo src={feature.video} priority={index < 2} />
+                <LazyVideo
+                  src={feature.video}
+                  poster={feature.poster}
+                  priority={index === 0}
+                  active={isActive}
+                />
               </div>
             </article>
           </Reveal>

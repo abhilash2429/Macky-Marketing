@@ -5,6 +5,7 @@ export const capabilityVideos = [
     description:
       "Hold your shortcut, speak naturally, and release. Macky answers aloud and can take supported actions without opening a chat window.",
     video: "/assets/notch.mp4",
+    poster: "/assets/posters/notch.jpg",
   },
   {
     title: "Dictate into the right field",
@@ -12,6 +13,7 @@ export const capabilityVideos = [
     description:
       "A separate safety-first dictation path validates the focused field, listens while you hold Ctrl + Fn, and inserts one final result only if the same field is still active.",
     video: "/assets/ocr.mp4",
+    poster: "/assets/posters/ocr.jpg",
   },
   {
     title: "Understand what is on screen",
@@ -19,6 +21,7 @@ export const capabilityVideos = [
     description:
       "When you ask for visual help, Macky captures fresh screen context and reasons about what is in front of you. It does not continuously record your screen.",
     video: "/assets/bulk-copy.mp4",
+    poster: "/assets/posters/bulk-copy.jpg",
   },
   {
     title: "Control macOS by voice",
@@ -26,6 +29,7 @@ export const capabilityVideos = [
     description:
       "Open apps and websites, change volume, toggle Do Not Disturb, lock the screen, set a reminder, check the calendar, or take care of another supported Mac task.",
     video: "/assets/inline.mp4",
+    poster: "/assets/posters/inline.jpg",
   },
   {
     title: "Work across connected apps",
@@ -33,6 +37,7 @@ export const capabilityVideos = [
     description:
       "Connect Gmail, Slack, Spotify, Google Calendar, Notion, GitHub, and Linear as you need them, then make clear requests in your own words.",
     video: "/assets/reminders.mp4",
+    poster: "/assets/posters/reminders.jpg",
   },
   {
     title: "Bring files into the conversation",
@@ -40,6 +45,7 @@ export const capabilityVideos = [
     description:
       "Drop images, PDFs, text, and other readable files into the notch panel, and Macky will use them alongside the active conversation.",
     video: "/assets/quick-paste.mp4",
+    poster: "/assets/posters/quick-paste.jpg",
   },
 ];
 

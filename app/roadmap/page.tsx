@@ -13,7 +13,7 @@ const roadmapColumns = [
       "Safe Ctrl + Fn dictation",
       "On-demand screen context",
       "Native Mac actions and seven connectors",
-      "User-controlled State Memory",
+      "User-controlled open-loop memory",
       "Bounded sub-agent delegation",
     ],
   },

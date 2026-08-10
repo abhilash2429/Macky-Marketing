@@ -1,23 +1,14 @@
 import Image from "next/image";
 import {
-  AppWindow,
-  BrainCircuit,
-  CalendarDays,
-  Command,
-  Eye,
-  FileText,
   Keyboard,
-  MousePointer2,
   Network,
-  Workflow,
 } from "lucide-react";
 import { FAQList } from "@/components/faq-list";
 import { CapabilityFeatures } from "@/components/capability-features";
 import { HeroCopy } from "@/components/hero-copy";
-import { MackyLogo } from "@/components/macky-logo";
 import { PageShell } from "@/components/page-shell";
 import { Reveal } from "@/components/reveal";
-import { connectors, nextCapabilities } from "@/lib/content";
+import { connectors } from "@/lib/content";
 
 const howSteps = [
   {
@@ -40,15 +31,6 @@ const howSteps = [
   },
 ];
 
-const nativeActions = [
-  { icon: CalendarDays, title: "Calendar", description: "Read events, create meetings, and find open time." },
-  { icon: Command, title: "System controls", description: "Change volume, toggle Do Not Disturb, or lock your Mac." },
-  { icon: MousePointer2, title: "Visible UI", description: "Move, click, drag, and scroll when you ask Macky to operate the screen." },
-  { icon: AppWindow, title: "Apps & websites", description: "Launch applications and open the right page without leaving your flow." },
-  { icon: Eye, title: "Screen context", description: "A fresh screenshot is used only when a visual request needs it." },
-  { icon: FileText, title: "Files", description: "Drop images, PDFs, and readable files into the active conversation." },
-];
-
 export default function HomePage() {
   return (
     <PageShell deferHeaderEntrance>
@@ -62,7 +44,9 @@ export default function HomePage() {
           <div className="section intro-content">
             <div className="section-heading centered how-heading">
               <span className="eyebrow">How it works</span>
-              <h2>From voice to action in three steps.</h2>
+              <h2>
+                Three steps. <em>One breath.</em>
+              </h2>
               <p>Macky stays in the notch until you call it — then it gets out of the way.</p>
             </div>
 
@@ -129,47 +113,94 @@ export default function HomePage() {
           <CapabilityFeatures />
         </section>
 
-        <section className="section organization-grid" id="memory-agents">
-          <article className="organization-card category-card">
-            <div>
-              <span className="eyebrow"><BrainCircuit size={15} /> Here now</span>
-              <h3>State Memory</h3>
-              <p>{nextCapabilities[0].description}</p>
-            </div>
-            <div className="category-ui memory-ui">
-              <div><span>Current project</span><small>active</small></div>
-              <div><span>Your preferences</span><small>reviewable</small></div>
-              <div><span>Recent decisions</span><small>controlled</small></div>
-              <div><span>Remembered context</span><small>removable</small></div>
-            </div>
-          </article>
-          <article className="organization-card filters-card">
-            <div>
-              <span className="eyebrow"><Workflow size={15} /> Here now</span>
-              <h3>Sub-agents</h3>
-              <p>{nextCapabilities[1].description}</p>
-            </div>
-            <div className="agent-orbit">
-              <div className="main-agent"><MackyLogo size={56} glow /><span>Macky</span></div>
-              <div className="agent-chip agent-chip-one">Research</div>
-              <div className="agent-chip agent-chip-two">Code</div>
-              <div className="agent-chip agent-chip-three">Apps</div>
-            </div>
-          </article>
-        </section>
+        <section className="memory-story" id="memory-agents">
+          <div className="memory-story-inner">
+            <header className="memory-story-hero">
+              <span className="eyebrow">Memory</span>
+              <h2>
+                Your memory that <em>closes open loops</em>
+              </h2>
+              <p>
+                Most assistants forget the moment you let go of the key.
+                Macky keeps a personal memory you own — unfinished work,
+                decisions in flight, preferences that matter — so the next
+                voice turn already knows what still belongs on your plate.
+              </p>
+            </header>
 
-        <section className="section audience-section">
-          <div className="section-heading">
-            <span className="eyebrow"><Command size={16} /> Native to your workflow</span>
-            <h2>Built for the things you do on a Mac.</h2>
-            <p>Local macOS actions stay close to the machine. Connected services come in only when you choose to use them.</p>
-          </div>
-          <div className="audience-grid">
-            {nativeActions.map(({ icon: Icon, title, description }) => (
-              <article className="audience-card" key={title}>
-                <span className="audience-icon"><Icon size={28} /></span><h3>{title}</h3><p>{description}</p>
-              </article>
-            ))}
+            <div className="memory-story-flow">
+              <Reveal className="memory-beat" delay={0}>
+                <span className="memory-beat-num">01</span>
+                <h3>It finds what’s still open</h3>
+                <p>
+                  A follow-up you meant to send. A half-decision from yesterday.
+                  A thread that never quite landed. Macky surfaces the high-value
+                  open loops from your sessions — not as a chat archive you dig through,
+                  but as living work that still needs a hand.
+                </p>
+              </Reveal>
+
+              <Reveal className="memory-beat" delay={80}>
+                <span className="memory-beat-num">02</span>
+                <h3>Then it helps close them</h3>
+                <p>
+                  Memory isn’t a scrapbook. It traces what changed, what you decided,
+                  and what’s left unfinished — then carries that forward until the loop
+                  actually resolves. Context-switch freely. Macky doesn’t drop what
+                  should still be on your plate.
+                </p>
+              </Reveal>
+
+              <Reveal className="memory-beat" delay={160}>
+                <span className="memory-beat-num">03</span>
+                <h3>It stays on your Mac</h3>
+                <p>
+                  Your memory lives on-device. Preferences, project state, open loops —
+                  reviewable, removable, yours. No silent cloud diary of your work life.
+                  Nothing remembered unless it earns its place, and nothing you can’t erase.
+                </p>
+              </Reveal>
+            </div>
+
+            <Reveal className="memory-handoff" delay={80}>
+              <div className="memory-handoff-copy">
+                <span className="eyebrow">Sub-agents</span>
+                <h3>When closing a loop takes more than a breath</h3>
+                <p>
+                  Some loops need research. Some need a follow-up across apps.
+                  Some need a bounded chore you shouldn’t babysit. Macky keeps you
+                  in the notch — the place you speak and decide — and hands the messy
+                  middle to focused sub-agents. They work the piece. You get the result.
+                  The loop can finally close.
+                </p>
+              </div>
+              <ul className="memory-handoff-list">
+                <li>
+                  <strong>Research</strong>
+                  <span>Pull context, compare options, bring back a clear answer.</span>
+                </li>
+                <li>
+                  <strong>Follow-ups</strong>
+                  <span>Chase the thread you opened without losing the thread you’re in.</span>
+                </li>
+                <li>
+                  <strong>App work</strong>
+                  <span>Bounded actions in the tools you already use — then report home.</span>
+                </li>
+              </ul>
+            </Reveal>
+
+            <div className="memory-ownership">
+              <p>
+                <strong>Stored on your Mac.</strong> Your memory isn’t trapped in someone else’s model.
+              </p>
+              <p>
+                <strong>Visible when you want it.</strong> See what’s remembered. Delete what shouldn’t be.
+              </p>
+              <p>
+                <strong>Built to finish work.</strong> Not to collect notes — to close the loop.
+              </p>
+            </div>
           </div>
         </section>
 

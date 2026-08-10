@@ -56,17 +56,25 @@ export const connectors = [
 export const nextCapabilities = [
   {
     status: "Live Feature",
-    title: "State Memory",
+    title: "Open-loop memory",
     description:
-      "Durable, user-controlled context that carries preferences, project state, and decisions across sessions — visible and removable at any time.",
-    details: ["Explicit memory controls", "Project and preference context", "Review and delete what is remembered"],
+      "Macky keeps a living memory of unfinished work — follow-ups, decisions, preferences, and project context — so every voice session picks up where the last one left off.",
+    details: [
+      "Surfaces open loops instead of losing them in chat history",
+      "Traces decisions until work is actually closed",
+      "Stays on your Mac, under your control",
+    ],
   },
   {
     status: "Live Feature",
     title: "Sub-agents",
     description:
-      "Specialized workers Macky can delegate bounded pieces of a larger request to, while the main voice session remains the place you direct and review the work.",
-    details: ["Parallel bounded tasks", "Visible ownership and progress", "Results returned to the main session"],
+      "When a loop needs more than a quick answer, Macky hands research, follow-ups, and app work to focused sub-agents, then brings the result back so the loop can close.",
+    details: [
+      "Bounded workers for messy multi-step tasks",
+      "You stay in control of the voice session",
+      "Results return to the notch so work can finish",
+    ],
   },
   {
     status: "Preview",
@@ -111,12 +119,12 @@ export const faqs = [
   {
     question: "Does Macky remember context across sessions?",
     answer:
-      "Yes. State Memory carries forward the context, preferences, and decisions that make future conversations easier. You can review or remove anything Macky remembers.",
+      "Yes. Open-loop memory keeps unfinished work, preferences, and decisions on your Mac so Macky can pick up where you left off. You can review or remove anything it remembers.",
   },
   {
     question: "Can Macky hand off work?",
     answer:
-      "Yes. Macky can split a larger request into focused pieces — research, code, or app actions — work on them in parallel, and bring everything back to the main session.",
+      "Yes. When closing a loop takes more than a quick turn, Macky can hand research, follow-ups, or app actions to focused sub-agents, then bring everything back to your notch session.",
   },
   {
     question: "Can Macky be interrupted while speaking?",

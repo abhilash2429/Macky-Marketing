@@ -91,9 +91,14 @@
 .reveal.is-hidden { opacity: 0; transform: translateY(28px); }
 .reveal.is-visible { opacity: 1; transform: translateY(0); }
 .feature-reveal { width: 100%; }
-.video-frame { transition: none; }
+.video-frame { transition: none; background: #e8f4ff; }
 .video-frame:hover { transform: none; box-shadow: 0 26px 70px rgba(8,124,255,.2); }
-.video-frame video { transition: none; }
+.video-frame video {
+  transition: opacity .28s ease;
+  background: transparent;
+  opacity: 0;
+}
+.video-frame video.lazy-video.is-ready { opacity: 1; }
 .video-frame:hover video { transform: none; filter: none; }
 
 .quote-mark { animation: quote-pulse 4s ease-in-out infinite; }

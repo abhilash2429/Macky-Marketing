@@ -113,7 +113,7 @@ export function CapabilityFeatures() {
                 <p>{feature.description}</p>
               </div>
               <div className="video-frame">
-                <LazyVideo src={feature.video} />
+                <LazyVideo src={feature.video} priority={index < 2} />
               </div>
             </article>
           </Reveal>

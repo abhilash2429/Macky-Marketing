@@ -34,76 +34,78 @@ export default function HomePage() {
   return (
     <PageShell deferHeaderEntrance>
         <main>
-        <section className="hero" id="hero">
+        <div className="hero-stage">
           <div className="hero-bg" aria-hidden="true" />
-          <HeroCopy />
-        </section>
+          <section className="hero" id="hero">
+            <HeroCopy />
+          </section>
 
-        <section className="intro-section" id="how-it-works">
-          <div className="section intro-content">
-            <div className="section-heading centered how-heading">
-              <span className="eyebrow">How it works</span>
-              <h2>
-                Three steps. <em>One breath.</em>
-              </h2>
-              <p>Macky stays in the notch until you call it — then it gets out of the way.</p>
-            </div>
-
-            <div className="how-stage">
-              <div className="how-flow" aria-hidden="true">
-                <span className="how-flow-track" />
-                <span className="how-flow-pulse" />
+          <section className="intro-section" id="how-it-works">
+            <div className="section intro-content">
+              <div className="section-heading centered how-heading">
+                <span className="eyebrow">How it works</span>
+                <h2>
+                  Three steps. <br /> <em>One breath.</em>
+                </h2>
+                <p>Macky stays in the notch until you call it — then it gets out of the way.</p>
               </div>
 
-              <ol className="how-steps">
-                {howSteps.map((step, index) => (
-                  <li className="how-step-item" key={step.number}>
-                    <Reveal className="how-step-reveal" delay={index * 110}>
-                      <div className={`how-step is-${step.visual}`}>
-                        <span className="how-step-watermark" aria-hidden="true">
-                          {step.number}
-                        </span>
+              <div className="how-stage">
+                <div className="how-flow" aria-hidden="true">
+                  <span className="how-flow-track" />
+                  <span className="how-flow-pulse" />
+                </div>
 
-                        <div className="how-step-visual" aria-hidden="true">
-                          {step.visual === "hold" && (
-                            <div className="how-keys">
-                              <kbd>⌃</kbd>
-                              <kbd>⌥</kbd>
-                            </div>
-                          )}
-                          {step.visual === "speak" && (
-                            <div className="how-notch">
-                              <span className="how-wave">
-                                <i /><i /><i /><i /><i /><i /><i />
-                              </span>
-                            </div>
-                          )}
-                          {step.visual === "done" && (
-                            <div className="how-done" aria-hidden="true">
-                              <svg className="how-done-check" viewBox="0 0 56 56" fill="none">
-                                <circle className="how-done-circle" cx="28" cy="28" r="24" />
-                                <path className="how-done-tick" d="M17.5 28.5L24.5 35.5L38.5 20.5" />
-                              </svg>
-                            </div>
-                          )}
-                        </div>
+                <ol className="how-steps">
+                  {howSteps.map((step, index) => (
+                    <li className="how-step-item" key={step.number}>
+                      <Reveal className="how-step-reveal" delay={index * 110}>
+                        <div className={`how-step is-${step.visual}`}>
+                          <span className="how-step-watermark" aria-hidden="true">
+                            {step.number}
+                          </span>
 
-                        <div className="how-step-copy">
-                          <span className="how-step-number">{step.number}</span>
-                          <h3>{step.title}</h3>
-                          {step.visual === "hold" && (
-                            <span className="sr-only">Control and Option</span>
-                          )}
-                          <p className="how-step-detail">{step.detail}</p>
+                          <div className="how-step-visual" aria-hidden="true">
+                            {step.visual === "hold" && (
+                              <div className="how-keys">
+                                <kbd>⌃</kbd>
+                                <kbd>⌥</kbd>
+                              </div>
+                            )}
+                            {step.visual === "speak" && (
+                              <div className="how-notch">
+                                <span className="how-wave">
+                                  <i /><i /><i /><i /><i /><i /><i />
+                                </span>
+                              </div>
+                            )}
+                            {step.visual === "done" && (
+                              <div className="how-done" aria-hidden="true">
+                                <svg className="how-done-check" viewBox="0 0 56 56" fill="none">
+                                  <circle className="how-done-circle" cx="28" cy="28" r="24" />
+                                  <path className="how-done-tick" d="M17.5 28.5L24.5 35.5L38.5 20.5" />
+                                </svg>
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="how-step-copy">
+                            <span className="how-step-number">{step.number}</span>
+                            <h3>{step.title}</h3>
+                            {step.visual === "hold" && (
+                              <span className="sr-only">Control and Option</span>
+                            )}
+                            <p className="how-step-detail">{step.detail}</p>
+                          </div>
                         </div>
-                      </div>
-                    </Reveal>
-                  </li>
-                ))}
-              </ol>
+                      </Reveal>
+                    </li>
+                  ))}
+                </ol>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
 
         <section className="feature-stack section" id="capabilities">
           <div className="section-heading centered how-heading capabilities-heading">

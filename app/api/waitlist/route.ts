@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
+import { getSupabaseAdmin } from "@/lib/supabase";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const WAITLIST_SOURCE = "macky-marketing-waitlist";
 
 export async function POST(request: Request) {
-  const waitlistWebhookUrl = process.env.WAITLIST_WEBHOOK_URL;
+  const supabase = getSupabaseAdmin();
 
-  if (!waitlistWebhookUrl) {
+  if (!supabase) {
     return NextResponse.json(
       { message: "Early access is not open just yet. Please check back soon." },
       { status: 503 },
@@ -24,16 +26,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Please enter a valid email address." }, { status: 400 });
   }
 
+  const normalizedEmail = email.trim().toLowerCase();
+
   try {
-    const webhookResponse = await fetch(waitlistWebhookUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: email.trim(), source: "macky-marketing-waitlist" }),
-      signal: AbortSignal.timeout(10_000),
+    const { error } = await supabase.from("waitlist").insert({
+      email: normalizedEmail,
+      source: WAITLIST_SOURCE,
     });
 
-    if (!webhookResponse.ok) {
-      throw new Error("Waitlist webhook rejected the request.");
+    // Already signed up — treat as success so the form still feels finished.
+    if (error?.code === "23505") {
+      return NextResponse.json({ message: "You’re on the list." }, { status: 200 });
+    }
+
+    if (error) {
+      throw error;
     }
   } catch {
     return NextResponse.json(

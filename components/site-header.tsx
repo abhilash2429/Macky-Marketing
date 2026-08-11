@@ -82,11 +82,12 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
 
   useEffect(() => {
     const sectionIds = navigation.map((item) => item.id);
+    // Keep the highlight pinned below the fixed notch nav.
+    const SECTION_MARKER = 110;
 
     const resolveActiveSection = () => {
       if (window.scrollY < COMPACT_OFF) return null;
 
-      const marker = window.scrollY + 96;
       let current: string | null = null;
       let foundSection = false;
 
@@ -94,7 +95,9 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
         const section = document.getElementById(id);
         if (!section) continue;
         foundSection = true;
-        if (section.offsetTop <= marker) current = id;
+        // getBoundingClientRect avoids offsetParent bugs when sections nest
+        // inside positioned wrappers (e.g. how-it-works inside hero-stage).
+        if (section.getBoundingClientRect().top <= SECTION_MARKER) current = id;
       }
 
       // Only highlight on pages that have landing sections (e.g. home).
@@ -112,8 +115,18 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
         setIsCompact(nextCompact);
       }
 
-      if (lockedSectionRef.current) {
-        setActiveSection(lockedSectionRef.current);
+      const locked = lockedSectionRef.current;
+      if (locked) {
+        setActiveSection(locked);
+        // Hold the clicked section until scroll actually reaches it — otherwise
+        // mid-page links like Capabilities flash blue while smooth-scrolling past.
+        if (resolveActiveSection() === locked) {
+          lockedSectionRef.current = null;
+          if (unlockTimerRef.current) {
+            window.clearTimeout(unlockTimerRef.current);
+            unlockTimerRef.current = null;
+          }
+        }
         return;
       }
 
@@ -146,10 +159,11 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
     closeMenu();
 
     if (unlockTimerRef.current) window.clearTimeout(unlockTimerRef.current);
+    // Fallback only — preferred unlock is when scroll reaches the section.
     unlockTimerRef.current = window.setTimeout(() => {
       lockedSectionRef.current = null;
       unlockTimerRef.current = null;
-    }, 900);
+    }, 2500);
   };
 
   const toggleMenu = () => {

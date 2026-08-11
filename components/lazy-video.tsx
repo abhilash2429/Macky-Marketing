@@ -12,6 +12,16 @@ type LazyVideoProps = {
   active?: boolean;
 };
 
+function unlockInlinePlayback(video: HTMLVideoElement) {
+  // iOS Safari is strict: muted + playsinline must be set before play().
+  video.defaultMuted = true;
+  video.muted = true;
+  video.playsInline = true;
+  video.setAttribute("muted", "");
+  video.setAttribute("playsinline", "");
+  video.setAttribute("webkit-playsinline", "");
+}
+
 export function LazyVideo({
   src,
   poster,
@@ -19,35 +29,67 @@ export function LazyVideo({
   priority = false,
   active = false,
 }: LazyVideoProps) {
+  const shellRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [shouldLoad, setShouldLoad] = useState(priority);
+  const [isInView, setIsInView] = useState(false);
+  const [revealVisible, setRevealVisible] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const updateMotionPreference = () => setPrefersReducedMotion(motionQuery.matches);
-    updateMotionPreference();
-    motionQuery.addEventListener("change", updateMotionPreference);
+    const sync = () => setPrefersReducedMotion(motionQuery.matches);
+    sync();
+    motionQuery.addEventListener("change", sync);
+    return () => motionQuery.removeEventListener("change", sync);
+  }, []);
 
-    // Warm nearby videos only — avoid fetching the whole page of media at once.
+  useEffect(() => {
+    const shell = shellRef.current;
+    if (!shell) return;
+
     const loadObserver = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
         setShouldLoad(true);
         loadObserver.disconnect();
       },
-      { rootMargin: "280px 0px", threshold: 0.01 },
+      { rootMargin: "360px 0px", threshold: 0.01 },
     );
 
-    loadObserver.observe(video);
+    const viewObserver = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting && entry.intersectionRatio >= 0.2);
+      },
+      { threshold: [0, 0.2, 0.4, 0.6] },
+    );
+
+    loadObserver.observe(shell);
+    viewObserver.observe(shell);
+
+    // Don't start playback under a still-hidden Reveal (opacity: 0 blacks out on iOS).
+    const reveal = shell.closest(".reveal");
+    let mutation: MutationObserver | null = null;
+
+    const syncReveal = () => {
+      if (!reveal) {
+        setRevealVisible(true);
+        return;
+      }
+      setRevealVisible(reveal.classList.contains("is-visible"));
+    };
+
+    syncReveal();
+    if (reveal) {
+      mutation = new MutationObserver(syncReveal);
+      mutation.observe(reveal, { attributes: true, attributeFilter: ["class"] });
+    }
 
     return () => {
-      motionQuery.removeEventListener("change", updateMotionPreference);
       loadObserver.disconnect();
+      viewObserver.disconnect();
+      mutation?.disconnect();
     };
   }, []);
 
@@ -61,33 +103,75 @@ export function LazyVideo({
       if (!cancelled) setIsReady(true);
     };
 
-    if (video.readyState >= 2) {
-      markReady();
-    } else {
-      video.addEventListener("loadeddata", markReady);
-      video.addEventListener("canplay", markReady);
+    // `playing` is the reliable mobile signal — Safari often skips loadeddata
+    // when preload is metadata-only.
+    video.addEventListener("playing", markReady);
+    video.addEventListener("loadeddata", markReady);
+    video.addEventListener("canplay", markReady);
+    video.addEventListener("canplaythrough", markReady);
+
+    if (video.readyState >= 2) markReady();
+
+    // Force a load after src attaches — required on some iOS versions.
+    unlockInlinePlayback(video);
+    try {
+      video.load();
+    } catch {
+      // ignore
     }
 
     return () => {
       cancelled = true;
+      video.removeEventListener("playing", markReady);
       video.removeEventListener("loadeddata", markReady);
       video.removeEventListener("canplay", markReady);
+      video.removeEventListener("canplaythrough", markReady);
     };
   }, [shouldLoad, src]);
+
+  const shouldPlay = Boolean(
+    active && isInView && revealVisible && shouldLoad && !prefersReducedMotion,
+  );
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !shouldLoad) return;
 
-    if (active && !prefersReducedMotion) {
-      void video.play().catch(() => undefined);
-    } else {
+    unlockInlinePlayback(video);
+
+    if (!shouldPlay) {
       video.pause();
+      return;
     }
-  }, [active, prefersReducedMotion, shouldLoad, isReady]);
+
+    let cancelled = false;
+
+    const attemptPlay = () => {
+      if (cancelled) return;
+      unlockInlinePlayback(video);
+      void video.play().catch(() => undefined);
+    };
+
+    // Double-rAF lets Reveal's opacity settle before iOS composites the layer.
+    const raf = window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(attemptPlay);
+    });
+    const retry = window.setTimeout(attemptPlay, 180);
+    const retryLate = window.setTimeout(attemptPlay, 600);
+
+    return () => {
+      cancelled = true;
+      window.cancelAnimationFrame(raf);
+      window.clearTimeout(retry);
+      window.clearTimeout(retryLate);
+    };
+  }, [shouldPlay, shouldLoad, src]);
 
   return (
-    <div className={`lazy-video-shell${isReady ? " is-ready" : ""}${className ? ` ${className}` : ""}`}>
+    <div
+      ref={shellRef}
+      className={`lazy-video-shell${isReady ? " is-ready" : ""}${className ? ` ${className}` : ""}`}
+    >
       {poster ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -107,7 +191,8 @@ export function LazyVideo({
         muted
         loop
         playsInline
-        preload={shouldLoad ? "metadata" : "none"}
+        autoPlay={shouldPlay}
+        preload={shouldLoad ? "auto" : "none"}
         aria-hidden="true"
       />
     </div>

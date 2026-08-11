@@ -285,6 +285,10 @@
   z-index: 2;
   opacity: 0;
   transition: opacity .28s ease;
+  /* Avoid iOS painting a black layer before the first frame. */
+  background: transparent;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 .lazy-video-shell.is-ready .lazy-video {
   opacity: 1;

@@ -75,15 +75,18 @@ export function HeroCopy() {
       </h1>
 
       {useLiteHero ? (
-        <p className="hero-description is-static">
-          <span className="hero-description-line">{descriptionLines[0]}</span>
+        <p className="hero-description is-static is-mobile-tight">
+          <span className="hero-description-line">Macky lives in your Mac&apos;s notch</span>
+          <span className="hero-description-line">until you need a hand.</span>
           <span className="hero-description-line">
             Hold{" "}
             <kbd className="hero-kbd" title="Control">⌃</kbd>
             <kbd className="hero-kbd" title="Option">⌥</kbd>
-            , say what you need, and it works across your apps.
+            {" "}— it works across your apps.
           </span>
-          <span className="hero-description-line">{descriptionLines[2]}</span>
+          <span className="hero-description-line">
+            No extra windows. Just back to it.
+          </span>
         </p>
       ) : (
         <motion.p

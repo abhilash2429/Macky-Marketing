@@ -44,7 +44,170 @@
 .hero h1{font-size:clamp(54px,7.2vw,98px)}
 .hero-copy>p{font-size:17px}
 .intro-section{padding-bottom:24px;background:transparent}
-@media(max-width:620px){.hero-bg{background-position:center top;height:clamp(640px,100svh,900px)}.hero{min-height:clamp(560px,78svh,700px);padding-top:108px;padding-bottom:56px}.hero h1{font-size:clamp(42px,11vw,52px)}.hero-copy>p{font-size:15px}.intro-content{padding-top:88px}}
+@media (max-width: 720px) {
+  :root {
+    --hero-title-top: 25%;
+    --hero-desc-top: 45%;
+    --hero-cta-top: 65.5%;
+    --hero-title-size: 49px;
+    --hero-desc-size: 16px;
+    --hero-cta-size: 15px;
+  }
+
+  /* Zoom in enough that the art fills the screen — the PNG's white floor
+     and the old 75% mask were leaving a blank band under the CTA. */
+  .hero-bg {
+    background-image: url("/assets/hero-background-mobile.png");
+    background-position: center top;
+    background-size: 158% auto;
+    height: 100svh;
+    height: 100dvh;
+    mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
+  }
+
+  .hero {
+    /* Fill the first screen so How it works never peeks into the initial view. */
+    min-height: 100svh;
+    min-height: 100dvh;
+    padding: 0 20px;
+    box-sizing: border-box;
+    align-items: stretch;
+    justify-items: center;
+  }
+
+  .hero-copy {
+    position: relative;
+    padding-top: 0;
+    translate: none;
+    width: min(100%, 420px);
+    margin: 0 auto;
+    min-height: 100svh;
+    min-height: 100dvh;
+    display: block;
+  }
+
+  .hero-copy > h1,
+  .hero-copy > .hero-description,
+  .hero-copy > .hero-actions {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    margin-inline: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+    transform: translate3d(0, var(--hero-layer-shift, 0px), 0);
+    transition:
+      top .35s var(--ease-out, cubic-bezier(.22, 1, .36, 1)),
+      font-size .25s var(--ease-out, cubic-bezier(.22, 1, .36, 1));
+    will-change: transform, top;
+    animation: none !important;
+  }
+
+  .hero-copy > h1 {
+    top: var(--hero-title-top, 25%);
+    --hero-layer-shift: var(--hero-title-shift, 0px);
+    font-size: var(--hero-title-size, 49px);
+    text-align: center;
+  }
+
+  .hero-copy > .hero-description,
+  .hero .hero-copy > .hero-description {
+    top: var(--hero-desc-top, 45%);
+    --hero-layer-shift: var(--hero-desc-shift, 0px);
+    width: min(100%, 34ch);
+    max-width: 34ch;
+    font-size: var(--hero-desc-size, 16px);
+    line-height: 1.45;
+    text-align: center;
+  }
+
+  .hero-copy > .hero-description.is-mobile-tight .hero-description-line {
+    display: block;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 360px) {
+    .hero-copy > .hero-description.is-mobile-tight .hero-description-line {
+      white-space: normal;
+    }
+  }
+
+  .hero-copy > .hero-actions {
+    top: var(--hero-cta-top, 65.5%);
+    --hero-layer-shift: var(--hero-cta-shift, 0px);
+    display: flex;
+    justify-content: center;
+    opacity: 1;
+    filter: none;
+  }
+
+  .hero-copy > .hero-actions .button {
+    font-size: var(--hero-cta-size, 15px);
+    transition: font-size .25s var(--ease-out, cubic-bezier(.22, 1, .36, 1));
+  }
+
+  .intro-content {
+    padding-top: 88px;
+  }
+}
+
+/* Tablet: same full-bleed hero as phone, milder zoom for the wider frame */
+@media (min-width: 721px) and (max-width: 1100px) {
+  .hero-bg {
+    background-image: url("/assets/hero-background-mobile.png");
+    background-position: center top;
+    background-size: 132% auto;
+    height: 100svh;
+    height: 100dvh;
+    mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
+  }
+
+  .hero {
+    min-height: 100svh;
+    min-height: 100dvh;
+    padding: 110px 32px 64px;
+    box-sizing: border-box;
+    align-items: start;
+    justify-items: center;
+  }
+
+  .hero-copy {
+    padding-top: 10px;
+    translate: none;
+    width: min(560px, calc(100% - 48px));
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero h1 {
+    margin: 0;
+    font-size: clamp(48px, 7vw, 68px);
+    text-align: center;
+  }
+
+  .hero-copy > p,
+  .hero .hero-copy > .hero-description {
+    width: min(480px, 100%);
+    margin: 24px auto 0;
+    font-size: 16px;
+    text-align: center;
+  }
+
+  .hero-actions {
+    margin-top: 30px;
+  }
+
+  .intro-content {
+    padding-top: 96px;
+  }
+}
 
 /* Motion system: short, purposeful movement with a complete reduced-motion fallback. */
 :root { --ease-out: cubic-bezier(.22,1,.36,1); --ease-spring: cubic-bezier(.2,.8,.2,1); }
@@ -247,8 +410,14 @@
   gap: 0;
   isolation: isolate;
   pointer-events: auto;
-  transition: padding .75s cubic-bezier(.22, 1, .36, 1);
-  will-change: padding;
+  transition:
+    width .7s cubic-bezier(.22, 1, .36, 1),
+    min-width .7s cubic-bezier(.22, 1, .36, 1),
+    max-width .7s cubic-bezier(.22, 1, .36, 1),
+    height .7s cubic-bezier(.22, 1, .36, 1),
+    padding .7s cubic-bezier(.22, 1, .36, 1),
+    gap .7s cubic-bezier(.22, 1, .36, 1);
+  will-change: width, height, padding;
 }
 
 /* Measured-width slots — real width animates so the notch morph stays continuous. */
@@ -303,9 +472,18 @@
 .nav-shell > .nav-collapse,
 .nav-shell > .desktop-nav,
 .nav-shell > .menu-button,
-.nav-shell > .mobile-nav {
+.nav-shell > .nav-active-section {
   position: relative;
   z-index: 1;
+}
+
+.nav-shell > .mobile-nav {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  min-width: 220px;
 }
 
 .brand {
@@ -341,6 +519,184 @@
 .mobile-nav a:not(:last-child):hover,
 .mobile-nav a:not(:last-child).is-active {
   color: var(--blue);
+}
+
+/* Hidden on desktop — phone/tablet compact pill uses this */
+.nav-active-section {
+  display: none;
+}
+
+/*
+  Phone + tablet nav:
+  - Hero / top: Macky logo + name, menu on the right
+  - After a little scroll: shrink → hamburger left + only the active section title right
+*/
+@media (max-width: 1100px) {
+  .desktop-nav {
+    display: none !important;
+  }
+
+  .menu-button {
+    display: grid !important;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    transition:
+      width .7s cubic-bezier(.22, 1, .36, 1),
+      height .7s cubic-bezier(.22, 1, .36, 1),
+      margin .7s cubic-bezier(.22, 1, .36, 1),
+      transform .25s var(--ease-out);
+  }
+
+  .nav-shell {
+    width: min(360px, calc(100% - 32px));
+    min-width: min(360px, calc(100% - 32px));
+    max-width: calc(100% - 24px);
+    height: 58px;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0;
+    padding: 8px 12px 10px 18px;
+  }
+
+  .nav-shell:not(.is-compact) .menu-button {
+    margin-left: auto;
+  }
+
+  .nav-shell .brand {
+    gap: 8px;
+    font-size: 17px;
+  }
+
+  .nav-collapse-brand {
+    display: block;
+    margin-right: 0;
+  }
+
+  /* Keep in layout so opacity/width can animate in on shrink */
+  .nav-active-section {
+    display: inline-flex;
+    position: relative;
+    z-index: 1;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 0;
+    margin-left: 0;
+    overflow: hidden;
+    opacity: 0;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 650;
+    letter-spacing: -.02em;
+    line-height: 1;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    pointer-events: none;
+    transition:
+      opacity .45s cubic-bezier(.22, 1, .36, 1) .12s,
+      max-width .7s cubic-bezier(.22, 1, .36, 1),
+      flex-grow .7s cubic-bezier(.22, 1, .36, 1);
+  }
+
+  .nav-active-section.is-empty {
+    display: inline-flex;
+    opacity: 0;
+    max-width: 0;
+    pointer-events: none;
+  }
+
+  /* Compact: fixed width so it doesn’t grow/shrink per section title */
+  .nav-shell.is-compact {
+    width: 210px;
+    min-width: 210px;
+    max-width: 210px;
+    height: 48px;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 6px 14px 8px 10px;
+  }
+
+  .nav-shell.is-compact .menu-button {
+    order: -1;
+    width: 34px;
+    height: 34px;
+    margin-left: 0;
+  }
+
+  .nav-shell.is-compact .nav-active-section {
+    opacity: 1;
+    max-width: 148px;
+    flex: 1 1 auto;
+    pointer-events: auto;
+  }
+}
+
+@media (max-width: 720px) {
+  .nav-shell {
+    width: min(320px, calc(100% - 28px));
+    min-width: min(320px, calc(100% - 28px));
+    height: 56px;
+    padding: 7px 10px 9px 14px;
+  }
+
+  .nav-shell:not(.is-compact) .menu-button {
+    margin-left: auto;
+  }
+
+  .nav-shell .brand {
+    font-size: 16px;
+  }
+
+  .nav-shell.is-compact {
+    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
+    height: 46px;
+    padding: 5px 12px 7px 8px;
+    gap: 8px;
+  }
+
+  .nav-active-section {
+    font-size: 14.5px;
+  }
+
+  .nav-shell.is-compact .nav-active-section {
+    max-width: 130px;
+  }
+}
+
+@media (max-width: 420px) {
+  .nav-shell {
+    width: min(280px, calc(100% - 24px));
+    min-width: min(280px, calc(100% - 24px));
+  }
+
+  .nav-shell.is-compact {
+    width: 190px;
+    min-width: 190px;
+    max-width: 190px;
+  }
+
+  .nav-active-section {
+    font-size: 14px;
+  }
+
+  .nav-shell.is-compact .nav-active-section {
+    max-width: 120px;
+  }
+}
+
+@media (max-width: 1100px) and (prefers-reduced-motion: reduce) {
+  .nav-shell,
+  .nav-shell .menu-button,
+  .nav-active-section,
+  .nav-collapse,
+  .nav-collapse > .brand {
+    transition: none !important;
+  }
 }
 
 .nav-download {
@@ -1357,14 +1713,27 @@ main .connector-showcase .section-heading h2 {
 
 @media (max-width: 900px) {
   .site-header { padding: 0 14px; }
-  .nav-shell { width: min(100%, 440px); gap: 0; justify-content: space-between; }
+  .nav-shell {
+    width: min(360px, calc(100% - 32px));
+    min-width: min(360px, calc(100% - 32px));
+    max-width: calc(100% - 24px);
+    justify-content: space-between;
+  }
+  .nav-shell:not(.is-compact) .menu-button {
+    margin-left: auto;
+  }
   .nav-collapse-brand { margin-right: 0; }
   .nav-shell.is-compact {
-    width: fit-content;
-    min-width: 52px;
-    justify-content: center;
-    padding-left: 14px;
+    width: 210px;
+    min-width: 210px;
+    max-width: 210px;
+    justify-content: space-between;
+    gap: 10px;
+    padding-left: 10px;
     padding-right: 14px;
+  }
+  .nav-shell.is-compact .menu-button {
+    margin-left: 0;
   }
   .mobile-nav { top: calc(100% + 10px); }
   .how-flow { display: none; }
@@ -1411,21 +1780,60 @@ main .connector-showcase .section-heading h2 {
 @media (max-width: 620px) {
   .site-header { padding: 0 10px; }
   .nav-shell {
-    width: min(calc(100% - 36px), 320px);
-    height: 46px;
-    padding: 4px 10px 7px 12px;
+    width: min(300px, calc(100% - 28px));
+    min-width: min(300px, calc(100% - 28px));
+    max-width: calc(100% - 20px);
+    height: 56px;
+    padding: 7px 10px 9px 14px;
     border-radius: 0 0 16px 16px;
+    justify-content: space-between;
   }
-  .brand { gap: 6px; font-size: 14px; }
-  .menu-button { width: 32px; height: 32px; }
+  .nav-shell:not(.is-compact) .menu-button {
+    margin-left: auto;
+  }
+  .nav-shell.is-compact {
+    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
+    height: 46px;
+    padding: 4px 12px 7px 8px;
+    gap: 8px;
+    justify-content: space-between;
+  }
+  .brand { gap: 8px; font-size: 16px; }
+  .menu-button { width: 38px; height: 38px; }
+  .nav-shell.is-compact .menu-button {
+    width: 32px;
+    height: 32px;
+    margin-left: 0;
+  }
+  .nav-shell.is-compact .nav-active-section {
+    opacity: 1;
+    max-width: 130px;
+    pointer-events: auto;
+    color: #fff;
+  }
+
+  .hero-bg {
+    background-image: url("/assets/hero-background-mobile.png");
+    background-position: center top;
+    background-size: 158% auto;
+    height: 100svh;
+    height: 100dvh;
+    mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
+  }
 
   .hero {
-    min-height: clamp(560px, 78svh, 700px);
-    padding: 96px 0 48px;
+    min-height: 100svh;
+    min-height: 100dvh;
+    padding: 100px 16px 48px;
     align-items: start;
+    justify-items: center;
+    box-sizing: border-box;
   }
   .hero h1 {
-    margin: 12px auto 0;
+    margin: 0 auto;
     max-width: 16ch;
     font-size: clamp(40px, 11vw, 50px);
     line-height: .95;
@@ -1435,15 +1843,20 @@ main .connector-showcase .section-heading h2 {
   .hero-copy {
     width: min(100% - 32px, 420px);
     margin: 0 auto;
-    padding-top: 28px;
+    padding-top: 3vh;
     translate: none;
     text-align: center;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
   }
   .hero-copy > p,
   .hero .hero-copy > .hero-description {
     width: 100%;
     max-width: 34ch;
-    margin: 18px auto 0;
+    margin: 0 auto;
     font-size: 15px;
     line-height: 1.55;
     letter-spacing: -.015em;
@@ -1459,7 +1872,7 @@ main .connector-showcase .section-heading h2 {
     text-align: center;
   }
   .hero-actions {
-    margin-top: 22px;
+    margin-top: 0;
     align-items: center;
     width: 100%;
   }
@@ -2345,28 +2758,51 @@ main .connector-showcase .section-heading h2 {
   }
 
   .hero {
-    min-height: clamp(640px, 86svh, 800px);
-    padding: 120px 0 72px;
+    min-height: 100svh;
+    min-height: 100dvh;
+    padding: 110px 32px 64px;
+    align-items: start;
+    justify-items: center;
+    box-sizing: border-box;
+  }
+
+  .hero-bg {
+    background-image: url("/assets/hero-background-mobile.png");
+    background-position: center top;
+    background-size: 132% auto;
+    height: 100svh;
+    height: 100dvh;
+    mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
   }
 
   .hero-copy {
-    translate: 0 -16px;
-    width: min(640px, calc(100% - 40px));
+    translate: none;
+    padding-top: 10px;
+    width: min(560px, calc(100% - 48px));
+    margin: 0 auto;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .hero h1 {
-    font-size: clamp(48px, 8vw, 72px);
+    margin: 0;
+    font-size: clamp(48px, 8vw, 68px);
     text-align: center;
   }
 
   .hero-copy > p,
   .hero .hero-copy > .hero-description {
     width: min(480px, 100%);
-    margin-left: auto;
-    margin-right: auto;
+    margin: 24px auto 0;
     font-size: 16px;
     text-align: center;
+  }
+
+  .hero-actions {
+    margin-top: 30px;
   }
 
   .section-heading h2 {
@@ -2482,6 +2918,46 @@ main .connector-showcase .section-heading h2 {
 @media (max-width: 620px) {
   .section {
     width: min(100% - 28px, 1180px);
+  }
+
+  .hero-bg {
+    background-position: center top;
+    background-size: 158% auto;
+    height: 100svh;
+    height: 100dvh;
+    mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
+  }
+
+  .hero {
+    min-height: 100svh;
+    min-height: 100dvh;
+    padding: 100px 16px 48px;
+    align-items: start;
+    justify-items: center;
+    box-sizing: border-box;
+  }
+
+  .hero-copy {
+    padding-top: 3vh;
+    translate: none;
+    width: min(100% - 32px, 420px);
+    margin: 0 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    text-align: center;
+  }
+
+  .hero-copy > p,
+  .hero .hero-copy > .hero-description {
+    margin: 0 auto;
+  }
+
+  .hero-actions {
+    margin-top: 0;
   }
 
   main .section:not(.intro-content) {
@@ -2666,7 +3142,7 @@ main .connector-showcase .section-heading h2 {
 @media (max-width: 400px) {
   .hero-copy {
     width: min(100% - 28px, 420px);
-    padding-top: 20px;
+    padding-top: 0;
   }
 
   .hero h1 {
@@ -2690,5 +3166,84 @@ main .connector-showcase .section-heading h2 {
 
   .memory-handoff-list {
     gap: 10px;
+  }
+}
+
+/* Phone: absolute placement via --hero-*-top. */
+@media (max-width: 720px) {
+  .hero {
+    align-items: stretch;
+    padding: 0 16px;
+  }
+
+  .hero-copy {
+    position: relative;
+    padding-top: 0;
+    min-height: 100svh;
+    min-height: 100dvh;
+    display: block;
+    width: min(100% - 32px, 420px);
+  }
+
+  .hero-copy > h1,
+  .hero-copy > .hero-description,
+  .hero-copy > .hero-actions {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100%;
+    margin: 0 auto;
+    transform: translate3d(0, var(--hero-layer-shift, 0px), 0);
+    transition:
+      top .35s var(--ease-out, cubic-bezier(.22, 1, .36, 1)),
+      font-size .25s var(--ease-out, cubic-bezier(.22, 1, .36, 1));
+    animation: none !important;
+  }
+
+  .hero-copy > h1 {
+    top: var(--hero-title-top, 25%);
+    --hero-layer-shift: var(--hero-title-shift, 0px);
+    margin: 0 auto;
+    font-size: var(--hero-title-size, 49px);
+    text-align: center;
+  }
+
+  .hero-copy > .hero-description,
+  .hero .hero-copy > .hero-description {
+    top: var(--hero-desc-top, 45%);
+    --hero-layer-shift: var(--hero-desc-shift, 0px);
+    margin: 0 auto;
+    width: min(100%, 34ch);
+    max-width: 34ch;
+    font-size: var(--hero-desc-size, 16px);
+    line-height: 1.45;
+  }
+
+  .hero-copy > .hero-description.is-mobile-tight .hero-description-line {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .hero-copy > .hero-actions {
+    top: var(--hero-cta-top, 65.5%);
+    --hero-layer-shift: var(--hero-cta-shift, 0px);
+    margin-top: 0;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    opacity: 1;
+    filter: none;
+  }
+
+  .hero-copy > .hero-actions .button {
+    font-size: var(--hero-cta-size, 15px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-copy > h1,
+  .hero-copy > .hero-description,
+  .hero-copy > .hero-actions {
+    transition: none;
   }
 }

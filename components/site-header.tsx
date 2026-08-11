@@ -7,10 +7,10 @@ import { MackyLogo } from "@/components/macky-logo";
 import { notchPath } from "@/components/notch-shape";
 
 const navigation = [
-  { label: "How it works", href: "/#how-it-works", id: "how-it-works" },
-  { label: "Capabilities", href: "/#capabilities", id: "capabilities" },
-  { label: "Memory & agents", href: "/#memory-agents", id: "memory-agents" },
-  { label: "FAQ", href: "/#faq", id: "faq" },
+  { label: "How it works", shortLabel: "How it works", href: "/#how-it-works", id: "how-it-works" },
+  { label: "Capabilities", shortLabel: "Capabilities", href: "/#capabilities", id: "capabilities" },
+  { label: "Memory & agents", shortLabel: "Memory", href: "/#memory-agents", id: "memory-agents" },
+  { label: "FAQ", shortLabel: "FAQ", href: "/#faq", id: "faq" },
 ];
 
 const COMPACT_ON = 120;
@@ -67,6 +67,12 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
   const lockedSectionRef = useRef<string | null>(null);
   const unlockTimerRef = useRef<number | null>(null);
   const compactRef = useRef(false);
+
+  const activeItem =
+    navigation.find((item) => item.id === activeSection) ??
+    // Compact can turn on before a section hits the marker — still show a label.
+    (isCompact ? navigation[0] : null);
+  const pillItem = activeItem ?? navigation[0];
 
   useEffect(() => {
     const measure = () => {
@@ -243,11 +249,21 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
           {isOpen ? <X size={18} /> : <Menu size={18} />}
         </button>
 
+        <Link
+          className={`nav-active-section${isCompact ? "" : " is-empty"}`}
+          href={pillItem.href}
+          tabIndex={isCompact ? undefined : -1}
+          aria-hidden={!isCompact}
+          onClick={() => selectSection(pillItem.id)}
+        >
+          {pillItem.shortLabel}
+        </Link>
+
         {(isOpen || isClosing) && (
           <div id="mobile-navigation" className={`mobile-nav ${isOpen ? "is-open" : "is-closing"}`} aria-hidden={!isOpen}>
             {navigation.map((item) => (
               <Link
-                key={item.label}
+                key={item.id}
                 href={item.href}
                 className={activeSection === item.id ? "is-active" : undefined}
                 aria-current={activeSection === item.id ? "true" : undefined}

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { createHash } from "crypto";
 import { readFileSync } from "fs";
 import path from "path";
+import Link from "next/link";
+import { MackyLogo } from "@/components/macky-logo";
 import { PageShell } from "@/components/page-shell";
 import { WaitlistForm } from "@/components/waitlist-form";
 import { getWaitlistCount } from "@/lib/supabase";
@@ -33,6 +35,9 @@ export default async function WaitlistPage() {
           aria-hidden="true"
         />
         <section className="waitlist-layout" id="waitlist-form" aria-label="Request early access">
+          <Link className="waitlist-logo" href="/" aria-label="Macky home">
+            <MackyLogo size={56} glow loading="eager" />
+          </Link>
           <p className="waitlist-eyebrow">Voice assistant for Mac</p>
           <h1>Let Macky handle the little interruptions.</h1>
           <p className="waitlist-lede">

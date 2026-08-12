@@ -1,7 +1,6 @@
 "use client";
 
 import { type FormEvent, useState } from "react";
-import { Check } from "lucide-react";
 
 type SubmissionState = "idle" | "submitting" | "success" | "error";
 
@@ -44,7 +43,11 @@ export function WaitlistForm({ initialCount = 0 }: { initialCount?: number }) {
       }
 
       setSubmissionState("success");
-      setMessage("You're on the list. You'll be notified when early access opens for you.");
+      setMessage(
+        result.added === false
+          ? "Hold your patience you’re already on the waitlist to try out GTA VI soon :)"
+          : result.message ?? "okeeeeeees :)\nYou are in......",
+      );
       setEmail("");
     } catch (error) {
       setSubmissionState("error");
@@ -55,13 +58,9 @@ export function WaitlistForm({ initialCount = 0 }: { initialCount?: number }) {
   return (
     <div className="waitlist-signup">
       {submissionState === "success" ? (
-        <div className="waitlist-success" role="status" aria-live="polite">
-          <span><Check size={18} /></span>
-          <div>
-            <strong>You&apos;re on the list.</strong>
-            <p>{message}</p>
-          </div>
-        </div>
+        <p className="waitlist-success-text" role="status" aria-live="polite">
+          {message}
+        </p>
       ) : (
         <>
           <p className="waitlist-social" aria-live="polite">{waitlistCountLabel(count)}</p>

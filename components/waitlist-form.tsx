@@ -7,7 +7,7 @@ type SubmissionState = "idle" | "submitting" | "success" | "error";
 
 function waitlistCountLabel(count: number) {
   if (count === 1) return "There is 1 other on the waitlist.";
-  return `There are ${count} others on the waitlist.`;
+  return `There are ${Math.max(0, count).toLocaleString()} others on the waitlist.`;
 }
 
 export function WaitlistForm({ initialCount = 0 }: { initialCount?: number }) {
@@ -53,9 +53,7 @@ export function WaitlistForm({ initialCount = 0 }: { initialCount?: number }) {
   }
 
   return (
-    <>
-      <p className="waitlist-social" aria-live="polite">{waitlistCountLabel(count)}</p>
-
+    <div className="waitlist-signup">
       {submissionState === "success" ? (
         <div className="waitlist-success" role="status" aria-live="polite">
           <span><Check size={18} /></span>
@@ -65,24 +63,27 @@ export function WaitlistForm({ initialCount = 0 }: { initialCount?: number }) {
           </div>
         </div>
       ) : (
-        <form className="waitlist-form" onSubmit={submitWaitlistRequest}>
-          <label className="sr-only" htmlFor="waitlist-email">Email address</label>
-          <input
-            id="waitlist-email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            value={email}
-            placeholder="Enter your email"
-            onChange={(event) => setEmail(event.target.value)}
-            required
-          />
-          <button type="submit" disabled={submissionState === "submitting"}>
-            {submissionState === "submitting" ? "Saving…" : "Request access"}
-          </button>
-          {submissionState === "error" && <p className="waitlist-error" role="alert">{message}</p>}
-        </form>
+        <>
+          <p className="waitlist-social" aria-live="polite">{waitlistCountLabel(count)}</p>
+          <form className="waitlist-form" onSubmit={submitWaitlistRequest}>
+            <label className="sr-only" htmlFor="waitlist-email">Email address</label>
+            <input
+              id="waitlist-email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              value={email}
+              placeholder="Enter your email"
+              onChange={(event) => setEmail(event.target.value)}
+              required
+            />
+            <button type="submit" disabled={submissionState === "submitting"}>
+              {submissionState === "submitting" ? "Saving…" : "Request access"}
+            </button>
+            {submissionState === "error" && <p className="waitlist-error" role="alert">{message}</p>}
+          </form>
+        </>
       )}
-    </>
+    </div>
   );
 }

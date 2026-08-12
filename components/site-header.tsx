@@ -13,8 +13,11 @@ const navigation = [
   { label: "FAQ", shortLabel: "FAQ", href: "/#faq", id: "faq" },
 ];
 
+// Subpages without landing sections still compact on scroll.
 const COMPACT_ON = 120;
 const COMPACT_OFF = 48;
+const SECTION_MARKER = 110;
+const SECTION_EXPAND_BUFFER = 80;
 
 /**
  * Paints the nav bar as the notch silhouette. Updates the path directly on
@@ -68,10 +71,8 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
   const unlockTimerRef = useRef<number | null>(null);
   const compactRef = useRef(false);
 
-  const activeItem =
-    navigation.find((item) => item.id === activeSection) ??
-    // Compact can turn on before a section hits the marker — still show a label.
-    (isCompact ? navigation[0] : null);
+  // Compact + section pill only after a landing section is reached.
+  const activeItem = navigation.find((item) => item.id === activeSection) ?? null;
   const pillItem = activeItem ?? navigation[0];
 
   useEffect(() => {
@@ -88,12 +89,8 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
 
   useEffect(() => {
     const sectionIds = navigation.map((item) => item.id);
-    // Keep the highlight pinned below the fixed notch nav.
-    const SECTION_MARKER = 110;
 
     const resolveActiveSection = () => {
-      if (window.scrollY < COMPACT_OFF) return null;
-
       let current: string | null = null;
       let foundSection = false;
 
@@ -110,18 +107,34 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
       return foundSection ? current : null;
     };
 
-    const handleScroll = () => {
-      // Hysteresis keeps the morph from flickering at the threshold — same on every page.
-      const nextCompact = compactRef.current
+    const resolveCompact = (active: string | null) => {
+      const firstSection = document.getElementById(sectionIds[0]);
+
+      // Home: keep the full Macky nav through the entire hero; shrink only
+      // once How it works (or a locked jump target) is in range.
+      if (firstSection) {
+        const top = firstSection.getBoundingClientRect().top;
+        if (lockedSectionRef.current) return true;
+        if (compactRef.current) return top <= SECTION_MARKER + SECTION_EXPAND_BUFFER;
+        return active !== null || top <= SECTION_MARKER;
+      }
+
+      // Subpages: scroll-distance hysteresis.
+      return compactRef.current
         ? window.scrollY > COMPACT_OFF
         : window.scrollY > COMPACT_ON;
+    };
+
+    const handleScroll = () => {
+      const locked = lockedSectionRef.current;
+      const active = locked ?? resolveActiveSection();
+      const nextCompact = resolveCompact(active);
 
       if (nextCompact !== compactRef.current) {
         compactRef.current = nextCompact;
         setIsCompact(nextCompact);
       }
 
-      const locked = lockedSectionRef.current;
       if (locked) {
         setActiveSection(locked);
         // Hold the clicked section until scroll actually reaches it — otherwise
@@ -136,7 +149,7 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
         return;
       }
 
-      setActiveSection(resolveActiveSection());
+      setActiveSection(active);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -162,6 +175,8 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
   const selectSection = (id: string) => {
     lockedSectionRef.current = id;
     setActiveSection(id);
+    compactRef.current = true;
+    setIsCompact(true);
     closeMenu();
 
     if (unlockTimerRef.current) window.clearTimeout(unlockTimerRef.current);
@@ -199,7 +214,13 @@ export function SiteHeader({ deferEntrance = false }: { deferEntrance?: boolean 
             ref={brandInnerRef}
             className="brand"
             href="/#hero"
-            onClick={closeMenu}
+            onClick={() => {
+              lockedSectionRef.current = null;
+              setActiveSection(null);
+              compactRef.current = false;
+              setIsCompact(false);
+              closeMenu();
+            }}
             aria-hidden={isCompact}
             tabIndex={isCompact ? -1 : undefined}
           >

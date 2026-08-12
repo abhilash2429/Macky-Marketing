@@ -26,7 +26,7 @@
   right: 0;
   height: clamp(900px, 120vh, 1300px);
   z-index: 0;
-  background: url('/assets/hero-background.jpg') center top / cover no-repeat;
+  background: url('/assets/hero-background-v2.png') center top / cover no-repeat;
   pointer-events: none;
   opacity: 1;
   animation: none;
@@ -46,20 +46,22 @@
 .intro-section{padding-bottom:24px;background:transparent}
 @media (max-width: 720px) {
   :root {
-    --hero-title-top: 25%;
-    --hero-desc-top: 45%;
-    --hero-cta-top: 65.5%;
+    /* Title in clear blue sky; desc + CTA lifted for tighter mobile stack */
+    --hero-title-top: 17%;
+    --hero-desc-top: 42%;
+    --hero-cta-top: 58%;
     --hero-title-size: 49px;
-    --hero-desc-size: 16px;
-    --hero-cta-size: 15px;
+    --hero-desc-size: 13px;
+    --hero-cta-size: 13px;
   }
 
   /* Zoom in enough that the art fills the screen — the PNG's white floor
      and the old 75% mask were leaving a blank band under the CTA. */
   .hero-bg {
-    background-image: url("/assets/hero-background-mobile.png");
-    background-position: center top;
-    background-size: 158% auto;
+    background-image: url("/assets/hero-background-mobile-v3.png");
+    /* Nudge down so the light mist floor sits under desc/CTA */
+    background-position: center 18%;
+    background-size: 150%;
     height: 100svh;
     height: 100dvh;
     mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
@@ -107,19 +109,26 @@
   }
 
   .hero-copy > h1 {
-    top: var(--hero-title-top, 25%);
+    top: var(--hero-title-top, 17%);
     --hero-layer-shift: var(--hero-title-shift, 0px);
     font-size: var(--hero-title-size, 49px);
     text-align: center;
+    text-shadow:
+      0 1px 2px rgba(0, 30, 80, .35),
+      0 4px 22px rgba(0, 50, 120, .4);
   }
 
   .hero-copy > .hero-description,
   .hero .hero-copy > .hero-description {
-    top: var(--hero-desc-top, 45%);
+    top: var(--hero-desc-top, 42%);
     --hero-layer-shift: var(--hero-desc-shift, 0px);
-    width: min(100%, 34ch);
-    max-width: 34ch;
-    font-size: var(--hero-desc-size, 16px);
+    /* Narrower + slight left bias so copy clears the right-hand art */
+    width: min(100%, 28ch);
+    max-width: 28ch;
+    margin-inline: auto;
+    padding-right: 6vw;
+    box-sizing: content-box;
+    font-size: var(--hero-desc-size, 13px);
     line-height: 1.45;
     text-align: center;
   }
@@ -136,7 +145,7 @@
   }
 
   .hero-copy > .hero-actions {
-    top: var(--hero-cta-top, 65.5%);
+    top: var(--hero-cta-top, 58%);
     --hero-layer-shift: var(--hero-cta-shift, 0px);
     display: flex;
     justify-content: center;
@@ -145,7 +154,13 @@
   }
 
   .hero-copy > .hero-actions .button {
-    font-size: var(--hero-cta-size, 15px);
+    font-size: var(--hero-cta-size, 13px);
+    min-height: 42px;
+    padding: 0 16px;
+    gap: 6px;
+    border-radius: 12px;
+    width: max-content;
+    max-width: 100%;
     transition: font-size .25s var(--ease-out, cubic-bezier(.22, 1, .36, 1));
   }
 
@@ -157,9 +172,9 @@
 /* Tablet: same full-bleed hero as phone, milder zoom for the wider frame */
 @media (min-width: 721px) and (max-width: 1100px) {
   .hero-bg {
-    background-image: url("/assets/hero-background-mobile.png");
+    background-image: url("/assets/hero-background-mobile-v3.png");
     background-position: center top;
-    background-size: 132% auto;
+    background-size: cover;
     height: 100svh;
     height: 100dvh;
     mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
@@ -415,12 +430,12 @@
   isolation: isolate;
   pointer-events: auto;
   transition:
-    width .7s cubic-bezier(.22, 1, .36, 1),
-    min-width .7s cubic-bezier(.22, 1, .36, 1),
-    max-width .7s cubic-bezier(.22, 1, .36, 1),
-    height .7s cubic-bezier(.22, 1, .36, 1),
-    padding .7s cubic-bezier(.22, 1, .36, 1),
-    gap .7s cubic-bezier(.22, 1, .36, 1);
+    width .85s cubic-bezier(.22, 1, .36, 1),
+    min-width .85s cubic-bezier(.22, 1, .36, 1),
+    max-width .85s cubic-bezier(.22, 1, .36, 1),
+    height .85s cubic-bezier(.22, 1, .36, 1),
+    padding .85s cubic-bezier(.22, 1, .36, 1),
+    gap .85s cubic-bezier(.22, 1, .36, 1);
   will-change: width, height, padding;
 }
 
@@ -430,8 +445,8 @@
   flex: 0 0 auto;
   min-width: 0;
   transition:
-    width .75s cubic-bezier(.22, 1, .36, 1),
-    margin .75s cubic-bezier(.22, 1, .36, 1);
+    width .85s cubic-bezier(.22, 1, .36, 1),
+    margin .85s cubic-bezier(.22, 1, .36, 1);
   will-change: width, margin;
 }
 
@@ -445,8 +460,8 @@
   opacity: 1;
   transform: translateX(0);
   transition:
-    opacity .4s cubic-bezier(.22, 1, .36, 1),
-    transform .75s cubic-bezier(.22, 1, .36, 1),
+    opacity .35s cubic-bezier(.22, 1, .36, 1),
+    transform .85s cubic-bezier(.22, 1, .36, 1),
     background-color .2s ease,
     color .2s ease;
 }
@@ -532,31 +547,19 @@
 
 /*
   Phone + tablet nav:
-  - Hero / top: Macky logo + name, menu on the right
-  - After a little scroll: shrink → hamburger left + only the active section title right
+  - Hero: Macky left, hamburger on the right edge
+  - Compact: hamburger on the left edge, section title on the right
+  Width uses plain lengths (not min()) so the shrink can interpolate.
 */
 @media (max-width: 1100px) {
   .desktop-nav {
     display: none !important;
   }
 
-  .menu-button {
-    display: grid !important;
-    place-items: center;
-    flex: 0 0 auto;
-    width: 40px;
-    height: 40px;
-    transition:
-      width .7s cubic-bezier(.22, 1, .36, 1),
-      height .7s cubic-bezier(.22, 1, .36, 1),
-      margin .7s cubic-bezier(.22, 1, .36, 1),
-      transform .25s var(--ease-out);
-  }
-
   .nav-shell {
-    width: min(360px, calc(100% - 32px));
-    min-width: min(360px, calc(100% - 32px));
-    max-width: calc(100% - 24px);
+    width: 360px;
+    min-width: 0;
+    max-width: calc(100% - 32px);
     height: 58px;
     justify-content: space-between;
     align-items: center;
@@ -564,8 +567,20 @@
     padding: 8px 12px 10px 18px;
   }
 
-  .nav-shell:not(.is-compact) .menu-button {
+  .menu-button {
+    display: grid !important;
+    place-items: center;
+    position: relative;
+    z-index: 2;
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
     margin-left: auto;
+    transform: none;
+    transition:
+      width .85s cubic-bezier(.22, 1, .36, 1),
+      height .85s cubic-bezier(.22, 1, .36, 1),
+      margin .85s cubic-bezier(.22, 1, .36, 1);
   }
 
   .nav-shell .brand {
@@ -600,9 +615,8 @@
     text-overflow: ellipsis;
     pointer-events: none;
     transition:
-      opacity .45s cubic-bezier(.22, 1, .36, 1) .12s,
-      max-width .7s cubic-bezier(.22, 1, .36, 1),
-      flex-grow .7s cubic-bezier(.22, 1, .36, 1);
+      opacity .4s cubic-bezier(.22, 1, .36, 1) .2s,
+      max-width .85s cubic-bezier(.22, 1, .36, 1);
   }
 
   .nav-active-section.is-empty {
@@ -612,13 +626,11 @@
     pointer-events: none;
   }
 
-  /* Compact: fixed width so it doesn’t grow/shrink per section title */
   .nav-shell.is-compact {
     width: 210px;
-    min-width: 210px;
+    min-width: 0;
     max-width: 210px;
     height: 48px;
-    justify-content: space-between;
     gap: 10px;
     padding: 6px 14px 8px 10px;
   }
@@ -634,20 +646,24 @@
     opacity: 1;
     max-width: 148px;
     flex: 1 1 auto;
+    margin-left: auto;
     pointer-events: auto;
+  }
+
+  .nav-shell.is-compact .nav-collapse > .brand {
+    transition:
+      opacity .28s cubic-bezier(.22, 1, .36, 1),
+      transform .85s cubic-bezier(.22, 1, .36, 1);
   }
 }
 
 @media (max-width: 720px) {
   .nav-shell {
-    width: min(320px, calc(100% - 28px));
-    min-width: min(320px, calc(100% - 28px));
+    width: 320px;
+    min-width: 0;
+    max-width: calc(100% - 28px);
     height: 56px;
     padding: 7px 10px 9px 14px;
-  }
-
-  .nav-shell:not(.is-compact) .menu-button {
-    margin-left: auto;
   }
 
   .nav-shell .brand {
@@ -656,11 +672,22 @@
 
   .nav-shell.is-compact {
     width: 200px;
-    min-width: 200px;
+    min-width: 0;
     max-width: 200px;
     height: 46px;
     padding: 5px 12px 7px 8px;
     gap: 8px;
+  }
+
+  .menu-button {
+    width: 38px;
+    height: 38px;
+  }
+
+  .nav-shell.is-compact .menu-button {
+    width: 32px;
+    height: 32px;
+    margin-left: 0;
   }
 
   .nav-active-section {
@@ -674,13 +701,14 @@
 
 @media (max-width: 420px) {
   .nav-shell {
-    width: min(280px, calc(100% - 24px));
-    min-width: min(280px, calc(100% - 24px));
+    width: 280px;
+    min-width: 0;
+    max-width: calc(100% - 24px);
   }
 
   .nav-shell.is-compact {
     width: 190px;
-    min-width: 190px;
+    min-width: 0;
     max-width: 190px;
   }
 
@@ -717,6 +745,13 @@
 .hero-copy {
   translate: 0 -40px;
   text-align: center;
+}
+
+/* Desktop/web: lift hero copy a bit higher into the sky */
+@media (min-width: 1101px) {
+  .hero-copy {
+    translate: 0 -96px;
+  }
 }
 
 .hero .hero-copy > p.hero-description,
@@ -887,6 +922,7 @@ main > :not(.hero) h4,
   isolation: isolate;
   padding: 0 0 24px;
   background: transparent;
+  scroll-margin-top: 88px;
 }
 
 .intro-content {
@@ -923,6 +959,7 @@ main .section-heading {
   padding-top: 72px;
   padding-bottom: 48px;
   background: #fff;
+  scroll-margin-top: 88px;
 }
 
 .feature-stack .how-heading {
@@ -948,6 +985,7 @@ main .section-heading {
   position: relative;
   z-index: 2;
   padding: 110px 0 64px;
+  scroll-margin-top: 88px;
   background:
     radial-gradient(ellipse 70% 55% at 90% 10%, rgba(8, 124, 255, .1), transparent 55%),
     radial-gradient(ellipse 50% 40% at 0% 90%, rgba(66, 186, 255, .08), transparent 50%),
@@ -1713,31 +1751,24 @@ main .connector-showcase .section-heading h2 {
 
 .faq-section {
   gap: 48px;
+  scroll-margin-top: 88px;
 }
 
 @media (max-width: 900px) {
   .site-header { padding: 0 14px; }
   .nav-shell {
-    width: min(360px, calc(100% - 32px));
-    min-width: min(360px, calc(100% - 32px));
-    max-width: calc(100% - 24px);
+    width: 360px;
+    min-width: 0;
+    max-width: calc(100% - 32px);
     justify-content: space-between;
-  }
-  .nav-shell:not(.is-compact) .menu-button {
-    margin-left: auto;
   }
   .nav-collapse-brand { margin-right: 0; }
   .nav-shell.is-compact {
     width: 210px;
-    min-width: 210px;
+    min-width: 0;
     max-width: 210px;
-    justify-content: space-between;
     gap: 10px;
-    padding-left: 10px;
-    padding-right: 14px;
-  }
-  .nav-shell.is-compact .menu-button {
-    margin-left: 0;
+    padding: 6px 14px 8px 10px;
   }
   .mobile-nav { top: calc(100% + 10px); }
   .how-flow { display: none; }
@@ -1784,20 +1815,17 @@ main .connector-showcase .section-heading h2 {
 @media (max-width: 620px) {
   .site-header { padding: 0 10px; }
   .nav-shell {
-    width: min(300px, calc(100% - 28px));
-    min-width: min(300px, calc(100% - 28px));
-    max-width: calc(100% - 20px);
+    width: 300px;
+    min-width: 0;
+    max-width: calc(100% - 28px);
     height: 56px;
     padding: 7px 10px 9px 14px;
     border-radius: 0 0 16px 16px;
     justify-content: space-between;
   }
-  .nav-shell:not(.is-compact) .menu-button {
-    margin-left: auto;
-  }
   .nav-shell.is-compact {
     width: 200px;
-    min-width: 200px;
+    min-width: 0;
     max-width: 200px;
     height: 46px;
     padding: 4px 12px 7px 8px;
@@ -1805,7 +1833,11 @@ main .connector-showcase .section-heading h2 {
     justify-content: space-between;
   }
   .brand { gap: 8px; font-size: 16px; }
-  .menu-button { width: 38px; height: 38px; }
+  .menu-button {
+    width: 38px;
+    height: 38px;
+    margin-left: auto;
+  }
   .nav-shell.is-compact .menu-button {
     width: 32px;
     height: 32px;
@@ -1819,9 +1851,9 @@ main .connector-showcase .section-heading h2 {
   }
 
   .hero-bg {
-    background-image: url("/assets/hero-background-mobile.png");
-    background-position: center top;
-    background-size: 158% auto;
+    background-image: url("/assets/hero-background-mobile-v3.png");
+    background-position: center 18%;
+    background-size: 150%;
     height: 100svh;
     height: 100dvh;
     mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
@@ -1881,8 +1913,10 @@ main .connector-showcase .section-heading h2 {
     width: 100%;
   }
   .hero-actions .button {
-    min-height: 48px;
-    width: min(100%, 280px);
+    min-height: 42px;
+    padding: 0 16px;
+    width: max-content;
+    max-width: 100%;
     margin-inline: auto;
   }
   .hero-kbd {
@@ -2771,9 +2805,8 @@ main .connector-showcase .section-heading h2 {
   }
 
   .hero-bg {
-    background-image: url("/assets/hero-background-mobile.png");
+    background-image: url("/assets/hero-background-mobile-v3.png");
     background-position: center top;
-    background-size: 132% auto;
     height: 100svh;
     height: 100dvh;
     mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
@@ -2925,8 +2958,9 @@ main .connector-showcase .section-heading h2 {
   }
 
   .hero-bg {
-    background-position: center top;
-    background-size: 158% auto;
+    background-image: url("/assets/hero-background-mobile-v3.png");
+    background-position: center 18%;
+    background-size: 150%;
     height: 100svh;
     height: 100dvh;
     mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
@@ -3205,22 +3239,28 @@ main .connector-showcase .section-heading h2 {
   }
 
   .hero-copy > h1 {
-    top: var(--hero-title-top, 25%);
+    top: var(--hero-title-top, 17%);
     --hero-layer-shift: var(--hero-title-shift, 0px);
     margin: 0 auto;
     font-size: var(--hero-title-size, 49px);
     text-align: center;
+    text-shadow:
+      0 1px 2px rgba(0, 30, 80, .35),
+      0 4px 22px rgba(0, 50, 120, .4);
   }
 
   .hero-copy > .hero-description,
   .hero .hero-copy > .hero-description {
-    top: var(--hero-desc-top, 45%);
+    top: var(--hero-desc-top, 42%);
     --hero-layer-shift: var(--hero-desc-shift, 0px);
     margin: 0 auto;
-    width: min(100%, 34ch);
-    max-width: 34ch;
-    font-size: var(--hero-desc-size, 16px);
+    width: min(100%, 28ch);
+    max-width: 28ch;
+    padding-right: 6vw;
+    box-sizing: content-box;
+    font-size: var(--hero-desc-size, 13px);
     line-height: 1.45;
+    text-align: center;
   }
 
   .hero-copy > .hero-description.is-mobile-tight .hero-description-line {
@@ -3229,7 +3269,7 @@ main .connector-showcase .section-heading h2 {
   }
 
   .hero-copy > .hero-actions {
-    top: var(--hero-cta-top, 65.5%);
+    top: var(--hero-cta-top, 58%);
     --hero-layer-shift: var(--hero-cta-shift, 0px);
     margin-top: 0;
     display: flex;
@@ -3240,7 +3280,7 @@ main .connector-showcase .section-heading h2 {
   }
 
   .hero-copy > .hero-actions .button {
-    font-size: var(--hero-cta-size, 15px);
+    font-size: var(--hero-cta-size, 13px);
   }
 }
 

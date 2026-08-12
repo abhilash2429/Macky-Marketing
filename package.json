@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "bust-assets": "node scripts/bust-asset-cache.mjs",
+    "predev": "node scripts/bust-asset-cache.mjs",
+    "prebuild": "node scripts/bust-asset-cache.mjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

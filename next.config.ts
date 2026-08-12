@@ -8,14 +8,14 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        // Don't use `immutable` — wallpaper assets are often replaced in place
-        // during design iteration, and Safari will otherwise keep the old file
-        // for up to a year.
+        // Design assets are often replaced in place under the same filename.
+        // Force revalidation on every request so Safari/Chrome don't keep a
+        // stale copy after a file swap (no immutable / long max-age).
         source: "/assets/:path*",
         headers: [
           {
             key: "Cache-Control",
-            value: "public, max-age=3600, must-revalidate",
+            value: "no-store",
           },
         ],
       },

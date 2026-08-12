@@ -1,56 +1,20 @@
 "use client";
 
-import { type FormEvent, useEffect, useRef, useState } from "react";
-import { ArrowUpRight, Check } from "lucide-react";
+import { type FormEvent, useState } from "react";
+import { Check } from "lucide-react";
 
 type SubmissionState = "idle" | "submitting" | "success" | "error";
 
-const TYPEWRITER_SAMPLE = "you@company.com";
-const TYPEWRITER_MS = 48;
+function waitlistCountLabel(count: number) {
+  if (count === 1) return "There is 1 other on the waitlist.";
+  return `There are ${count} others on the waitlist.`;
+}
 
-export function WaitlistForm() {
+export function WaitlistForm({ initialCount = 0 }: { initialCount?: number }) {
   const [email, setEmail] = useState("");
-  const [placeholder, setPlaceholder] = useState("");
+  const [count, setCount] = useState(initialCount);
   const [submissionState, setSubmissionState] = useState<SubmissionState>("idle");
   const [message, setMessage] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
-  const typewriterRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    function clearTypewriter() {
-      if (typewriterRef.current !== null) {
-        window.clearInterval(typewriterRef.current);
-        typewriterRef.current = null;
-      }
-    }
-
-    function startTypewriter() {
-      if (email.trim()) {
-        inputRef.current?.focus();
-        return;
-      }
-
-      clearTypewriter();
-      setPlaceholder("");
-      inputRef.current?.focus();
-
-      let index = 0;
-      typewriterRef.current = window.setInterval(() => {
-        index += 1;
-        setPlaceholder(TYPEWRITER_SAMPLE.slice(0, index));
-        if (index >= TYPEWRITER_SAMPLE.length && typewriterRef.current !== null) {
-          window.clearInterval(typewriterRef.current);
-          typewriterRef.current = null;
-        }
-      }, TYPEWRITER_MS);
-    }
-
-    window.addEventListener("waitlist:typewriter", startTypewriter);
-    return () => {
-      window.removeEventListener("waitlist:typewriter", startTypewriter);
-      clearTypewriter();
-    };
-  }, [email]);
 
   async function submitWaitlistRequest(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -63,10 +27,20 @@ export function WaitlistForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-      const result = await response.json() as { message?: string };
+      const result = await response.json() as {
+        message?: string;
+        count?: number;
+        added?: boolean;
+      };
 
       if (!response.ok) {
         throw new Error(result.message ?? "Something went wrong. Please try again.");
+      }
+
+      if (typeof result.count === "number") {
+        setCount(result.count);
+      } else if (result.added !== false) {
+        setCount((current) => current + 1);
       }
 
       setSubmissionState("success");
@@ -78,40 +52,37 @@ export function WaitlistForm() {
     }
   }
 
-  if (submissionState === "success") {
-    return (
-      <div className="waitlist-success" role="status" aria-live="polite">
-        <span><Check size={20} /></span>
-        <div>
-          <strong>You&apos;re on the list.</strong>
-          <p>{message}</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <form className="waitlist-form" onSubmit={submitWaitlistRequest}>
-      <label htmlFor="waitlist-email">Your email address</label>
-      <input
-        ref={inputRef}
-        id="waitlist-email"
-        name="email"
-        type="email"
-        autoComplete="email"
-        value={email}
-        placeholder={placeholder}
-        onChange={(event) => {
-          setPlaceholder("");
-          setEmail(event.target.value);
-        }}
-        required
-      />
-      <button className="button button-dark" type="submit" disabled={submissionState === "submitting"}>
-        {submissionState === "submitting" ? "Saving your spot…" : <>Request early access <ArrowUpRight size={18} /></>}
-      </button>
-      <p className="waitlist-form-note">This email will be used to manage your early-access request.</p>
-      {submissionState === "error" && <p className="waitlist-error" role="alert">{message}</p>}
-    </form>
+    <>
+      <p className="waitlist-social" aria-live="polite">{waitlistCountLabel(count)}</p>
+
+      {submissionState === "success" ? (
+        <div className="waitlist-success" role="status" aria-live="polite">
+          <span><Check size={18} /></span>
+          <div>
+            <strong>You&apos;re on the list.</strong>
+            <p>{message}</p>
+          </div>
+        </div>
+      ) : (
+        <form className="waitlist-form" onSubmit={submitWaitlistRequest}>
+          <label className="sr-only" htmlFor="waitlist-email">Email address</label>
+          <input
+            id="waitlist-email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            value={email}
+            placeholder="Enter your email"
+            onChange={(event) => setEmail(event.target.value)}
+            required
+          />
+          <button type="submit" disabled={submissionState === "submitting"}>
+            {submissionState === "submitting" ? "Saving…" : "Request access"}
+          </button>
+          {submissionState === "error" && <p className="waitlist-error" role="alert">{message}</p>}
+        </form>
+      )}
+    </>
   );
 }

@@ -1,7 +1,4 @@
 import Image from "next/image";
-import {
-  Keyboard,
-} from "lucide-react";
 import { FAQList } from "@/components/faq-list";
 import { CapabilityFeatures } from "@/components/capability-features";
 import { HeroCopy } from "@/components/hero-copy";
@@ -210,7 +207,6 @@ export default function HomePage() {
 
         <section className="section faq-section" id="faq">
           <div className="section-heading">
-            <span className="eyebrow"><Keyboard size={16} /> Before you start</span>
             <h2>Frequently Asked Questions</h2>
             <p>What Macky does today, how permissions and context work, and what is still coming next.</p>
           </div>

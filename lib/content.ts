@@ -95,22 +95,12 @@ export const faqs = [
   {
     question: "What is Macky?",
     answer:
-      "Macky is a macOS, notch-first, push-to-talk AI assistant. Hold a shortcut, speak, and it can answer or take supported actions across your Mac and the services you connect.",
+      "Macky is a macOS, notch-first, push-to-talk AI assistant. Hold a shortcut, speak, and it can answer or take supported actions across your Mac and the services you connect. It targets macOS 14.2 or later — Macs with a physical notch get the native notch experience; other Macs use a top-center floating bar.",
   },
   {
-    question: "Which Macs does Macky support?",
+    question: "Is Macky always listening or recording the screen?",
     answer:
-      "Macky targets macOS 14.2 or later. Macs with a physical notch get the native notch experience; other Macs use a top-center floating bar.",
-  },
-  {
-    question: "Is Macky always listening?",
-    answer:
-      "No. Audio capture begins only while you hold the configured shortcut. The microphone is not intended to run continuously in the background.",
-  },
-  {
-    question: "Does Macky constantly record the screen?",
-    answer:
-      "No. Screen context is captured on demand when a request needs visual understanding. You control the macOS Screen Recording permission.",
+      "No. Audio capture begins only while you hold the configured shortcut — the microphone is not intended to run continuously in the background. Screen context is captured on demand when a request needs visual understanding, and you control the macOS Screen Recording permission.",
   },
   {
     question: "How is dictation different from the assistant?",
@@ -123,14 +113,9 @@ export const faqs = [
       "The current app surfaces Gmail, Slack, Spotify, Google Calendar, Notion, GitHub, and Linear. Calendar, Reminders, system controls, app launching, and screen actions are handled locally on the Mac.",
   },
   {
-    question: "Does Macky remember context across sessions?",
+    question: "Does Macky remember context and hand off work?",
     answer:
-      "Yes. Open-loop memory keeps unfinished work, preferences, and decisions on your Mac so Macky can pick up where you left off. You can review or remove anything it remembers.",
-  },
-  {
-    question: "Can Macky hand off work?",
-    answer:
-      "Yes. When closing a loop takes more than a quick turn, Macky can hand research, follow-ups, or app actions to focused sub-agents, then bring everything back to your notch session.",
+      "Yes. Open-loop memory keeps unfinished work, preferences, and decisions on your Mac so Macky can pick up where you left off — you can review or remove anything it remembers. When closing a loop takes more than a quick turn, Macky can hand research, follow-ups, or app actions to focused sub-agents, then bring everything back to your notch session.",
   },
   {
     question: "Can Macky be interrupted while speaking?",

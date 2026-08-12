@@ -1,49 +1,45 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { createHash } from "crypto";
+import { readFileSync } from "fs";
+import path from "path";
 import { PageShell } from "@/components/page-shell";
 import { WaitlistForm } from "@/components/waitlist-form";
-import { WaitlistSpotLink } from "@/components/waitlist-spot-link";
+import { getWaitlistCount } from "@/lib/supabase";
 
 export const metadata: Metadata = {
   title: "Request early access",
   description: "Join the Macky waitlist for early access to a voice assistant that lives in your Mac's notch.",
 };
 
-const formApps = [
-  { src: "/assets/gmail.svg", className: "is-gmail" },
-  { src: "/assets/slack.svg", className: "is-slack" },
-  { src: "/assets/notes.webp", className: "is-notes" },
-  { src: "/assets/googlecalendar.svg", className: "is-calendar" },
-];
+export const dynamic = "force-dynamic";
 
-export default function WaitlistPage() {
+function waitlistBackgroundSrc() {
+  const file = path.join(process.cwd(), "public/assets/waitlist.png");
+  const hash = createHash("md5").update(readFileSync(file)).digest("hex").slice(0, 10);
+  return `/assets/waitlist.png?v=${hash}`;
+}
+
+export default async function WaitlistPage() {
+  const waitlistCount = await getWaitlistCount();
+
   return (
     <PageShell hideHeader hideFooter>
       <main className="waitlist-page">
-        <section className="waitlist-layout">
-          <div className="waitlist-copy">
-            <h1>Let Macky handle the little interruptions.</h1>
-            <p>
-              Macky is a voice assistant that stays in your Mac&apos;s notch until you need a hand. Say what you need,
-              then get back to what you were doing.
-            </p>
-            <WaitlistSpotLink />
-          </div>
-
-          <div className="waitlist-form-stage">
-            <div className="waitlist-form-apps" aria-hidden="true">
-              {formApps.map((app) => (
-                <span key={app.className} className={`waitlist-app-chip ${app.className}`}>
-                  <Image src={app.src} alt="" width={36} height={36} />
-                </span>
-              ))}
-            </div>
-            <aside className="waitlist-card" id="waitlist-form" aria-label="Request early access">
-              <h2>Be one of the first to try Macky.</h2>
-              <p>Access is opening gradually to keep the experience focused and useful.</p>
-              <WaitlistForm />
-            </aside>
-          </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          className="waitlist-page-bg"
+          src={waitlistBackgroundSrc()}
+          alt=""
+          aria-hidden="true"
+        />
+        <section className="waitlist-layout" id="waitlist-form" aria-label="Request early access">
+          <p className="waitlist-eyebrow">Voice assistant for Mac</p>
+          <h1>Let Macky handle the little interruptions.</h1>
+          <p className="waitlist-lede">
+            A voice assistant that stays in your Mac&apos;s notch until you need a hand.
+            Say what you need, then get back to what you were doing.
+          </p>
+          <WaitlistForm initialCount={waitlistCount} />
         </section>
       </main>
     </PageShell>

@@ -21,3 +21,15 @@ export function getSupabaseAdmin() {
 
   return supabaseAdmin;
 }
+
+export async function getWaitlistCount() {
+  const supabase = getSupabaseAdmin();
+  if (!supabase) return 0;
+
+  const { count, error } = await supabase
+    .from("waitlist")
+    .select("*", { count: "exact", head: true });
+
+  if (error || typeof count !== "number") return 0;
+  return count;
+}

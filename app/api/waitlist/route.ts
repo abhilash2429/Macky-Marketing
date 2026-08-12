@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSupabaseAdmin } from "@/lib/supabase";
+import { getSupabaseAdmin, getWaitlistCount } from "@/lib/supabase";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const WAITLIST_SOURCE = "macky-marketing-waitlist";
@@ -34,20 +34,22 @@ export async function POST(request: Request) {
       source: WAITLIST_SOURCE,
     });
 
+    const count = await getWaitlistCount();
+
     // Already signed up — treat as success so the form still feels finished.
     if (error?.code === "23505") {
-      return NextResponse.json({ message: "You’re on the list." }, { status: 200 });
+      return NextResponse.json({ message: "You’re on the list.", count, added: false }, { status: 200 });
     }
 
     if (error) {
       throw error;
     }
+
+    return NextResponse.json({ message: "You’re on the list.", count, added: true }, { status: 201 });
   } catch {
     return NextResponse.json(
       { message: "I couldn’t add you to the waitlist just yet. Please try again shortly." },
       { status: 502 },
     );
   }
-
-  return NextResponse.json({ message: "You’re on the list." }, { status: 201 });
 }

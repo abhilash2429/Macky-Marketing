@@ -26,7 +26,7 @@
   right: 0;
   height: clamp(900px, 120vh, 1300px);
   z-index: 0;
-  background: url('/assets/hero-background-v2.png') center top / cover no-repeat;
+  background: url('/assets/hero-background-v2.png?v=1786465733') center top / cover no-repeat;
   pointer-events: none;
   opacity: 1;
   animation: none;
@@ -46,22 +46,20 @@
 .intro-section{padding-bottom:24px;background:transparent}
 @media (max-width: 720px) {
   :root {
-    /* Title in clear blue sky; desc + CTA lifted for tighter mobile stack */
-    --hero-title-top: 17%;
-    --hero-desc-top: 42%;
-    --hero-cta-top: 58%;
-    --hero-title-size: 49px;
-    --hero-desc-size: 13px;
+    /* Title in sky; body nestled in the gap between the two hands */
+    --hero-title-top: 23.5%;
+    --hero-desc-top: 48%;
+    --hero-cta-top: 65.5%;
+    --hero-title-size: 52px;
+    --hero-desc-size: 15px;
     --hero-cta-size: 13px;
   }
 
-  /* Zoom in enough that the art fills the screen — the PNG's white floor
-     and the old 75% mask were leaving a blank band under the CTA. */
+  /* Mobile wallpaper — framed to keep sky for the title and mist for body/CTA */
   .hero-bg {
-    background-image: url("/assets/hero-background-mobile-v3.png");
-    /* Nudge down so the light mist floor sits under desc/CTA */
-    background-position: center 18%;
-    background-size: 150%;
+    background-image: url("/assets/hero-background-mobile-v3.png?v=1786543335");
+    background-position: center top;
+    background-size: 125%;
     height: 100svh;
     height: 100dvh;
     mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
@@ -109,9 +107,9 @@
   }
 
   .hero-copy > h1 {
-    top: var(--hero-title-top, 17%);
+    top: var(--hero-title-top, 23.5%);
     --hero-layer-shift: var(--hero-title-shift, 0px);
-    font-size: var(--hero-title-size, 49px);
+    font-size: var(--hero-title-size, 52px);
     text-align: center;
     text-shadow:
       0 1px 2px rgba(0, 30, 80, .35),
@@ -120,15 +118,12 @@
 
   .hero-copy > .hero-description,
   .hero .hero-copy > .hero-description {
-    top: var(--hero-desc-top, 42%);
+    top: var(--hero-desc-top, 48%);
     --hero-layer-shift: var(--hero-desc-shift, 0px);
-    /* Narrower + slight left bias so copy clears the right-hand art */
-    width: min(100%, 28ch);
-    max-width: 28ch;
+    width: min(100%, 30ch);
+    max-width: 30ch;
     margin-inline: auto;
-    padding-right: 6vw;
-    box-sizing: content-box;
-    font-size: var(--hero-desc-size, 13px);
+    font-size: var(--hero-desc-size, 15px);
     line-height: 1.45;
     text-align: center;
   }
@@ -145,7 +140,7 @@
   }
 
   .hero-copy > .hero-actions {
-    top: var(--hero-cta-top, 58%);
+    top: var(--hero-cta-top, 65.5%);
     --hero-layer-shift: var(--hero-cta-shift, 0px);
     display: flex;
     justify-content: center;
@@ -172,7 +167,7 @@
 /* Tablet: same full-bleed hero as phone, milder zoom for the wider frame */
 @media (min-width: 721px) and (max-width: 1100px) {
   .hero-bg {
-    background-image: url("/assets/hero-background-mobile-v3.png");
+    background-image: url("/assets/hero-background-mobile-v3.png?v=1786543335");
     background-position: center top;
     background-size: cover;
     height: 100svh;
@@ -1851,9 +1846,9 @@ main .connector-showcase .section-heading h2 {
   }
 
   .hero-bg {
-    background-image: url("/assets/hero-background-mobile-v3.png");
-    background-position: center 18%;
-    background-size: 150%;
+    background-image: url("/assets/hero-background-mobile-v3.png?v=1786543335");
+    background-position: center top;
+    background-size: 125%;
     height: 100svh;
     height: 100dvh;
     mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
@@ -2805,7 +2800,7 @@ main .connector-showcase .section-heading h2 {
   }
 
   .hero-bg {
-    background-image: url("/assets/hero-background-mobile-v3.png");
+    background-image: url("/assets/hero-background-mobile-v3.png?v=1786543335");
     background-position: center top;
     height: 100svh;
     height: 100dvh;
@@ -2958,9 +2953,9 @@ main .connector-showcase .section-heading h2 {
   }
 
   .hero-bg {
-    background-image: url("/assets/hero-background-mobile-v3.png");
-    background-position: center 18%;
-    background-size: 150%;
+    background-image: url("/assets/hero-background-mobile-v3.png?v=1786543335");
+    background-position: center top;
+    background-size: 125%;
     height: 100svh;
     height: 100dvh;
     mask-image: linear-gradient(to bottom, #000 88%, transparent 100%);
@@ -3239,10 +3234,10 @@ main .connector-showcase .section-heading h2 {
   }
 
   .hero-copy > h1 {
-    top: var(--hero-title-top, 17%);
+    top: var(--hero-title-top, 23.5%);
     --hero-layer-shift: var(--hero-title-shift, 0px);
     margin: 0 auto;
-    font-size: var(--hero-title-size, 49px);
+    font-size: var(--hero-title-size, 52px);
     text-align: center;
     text-shadow:
       0 1px 2px rgba(0, 30, 80, .35),
@@ -3251,14 +3246,12 @@ main .connector-showcase .section-heading h2 {
 
   .hero-copy > .hero-description,
   .hero .hero-copy > .hero-description {
-    top: var(--hero-desc-top, 42%);
+    top: var(--hero-desc-top, 48%);
     --hero-layer-shift: var(--hero-desc-shift, 0px);
     margin: 0 auto;
-    width: min(100%, 28ch);
-    max-width: 28ch;
-    padding-right: 6vw;
-    box-sizing: content-box;
-    font-size: var(--hero-desc-size, 13px);
+    width: min(100%, 30ch);
+    max-width: 30ch;
+    font-size: var(--hero-desc-size, 15px);
     line-height: 1.45;
     text-align: center;
   }
@@ -3269,7 +3262,7 @@ main .connector-showcase .section-heading h2 {
   }
 
   .hero-copy > .hero-actions {
-    top: var(--hero-cta-top, 58%);
+    top: var(--hero-cta-top, 65.5%);
     --hero-layer-shift: var(--hero-cta-shift, 0px);
     margin-top: 0;
     display: flex;
@@ -3282,6 +3275,130 @@ main .connector-showcase .section-heading h2 {
   .hero-copy > .hero-actions .button {
     font-size: var(--hero-cta-size, 13px);
   }
+}
+
+/* Mobile hero placement editor — open with /?edit=hero */
+.hero-placement-editor {
+  position: fixed;
+  z-index: 80;
+  right: 12px;
+  bottom: 12px;
+  width: min(320px, calc(100vw - 24px));
+  max-height: min(78vh, 640px);
+  overflow: auto;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 16px;
+  background: rgba(8, 10, 14, .92);
+  color: #f4f6f8;
+  backdrop-filter: blur(16px);
+  font-size: 12px;
+  line-height: 1.4;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .35);
+}
+
+.hero-placement-editor.is-collapsed {
+  width: auto;
+  max-height: none;
+  overflow: visible;
+  padding: 10px 12px;
+}
+
+.hero-placement-editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.hero-placement-editor-header strong {
+  font-size: 13px;
+  letter-spacing: -.02em;
+}
+
+.hero-placement-editor button {
+  border: 0;
+  border-radius: 8px;
+  padding: 7px 10px;
+  background: rgba(255, 255, 255, .08);
+  color: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.hero-placement-editor button.is-primary {
+  background: #087cff;
+}
+
+.hero-placement-editor-hint {
+  margin: 10px 0 12px;
+  color: rgba(255, 255, 255, .62);
+}
+
+.hero-placement-editor-fields {
+  display: grid;
+  gap: 14px;
+}
+
+.hero-placement-editor-group {
+  display: grid;
+  gap: 8px;
+}
+
+.hero-placement-editor-group-title {
+  margin: 0;
+  color: rgba(255, 255, 255, .45);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.hero-placement-editor-field {
+  display: grid;
+  gap: 4px;
+}
+
+.hero-placement-editor-field span {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: rgba(255, 255, 255, .78);
+}
+
+.hero-placement-editor-field em {
+  font-style: normal;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-placement-editor-field input[type="range"] {
+  width: 100%;
+  accent-color: #087cff;
+}
+
+.hero-placement-editor-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.hero-placement-editor-actions button {
+  flex: 1;
+}
+
+.hero-placement-editor-code {
+  margin: 12px 0 0;
+  padding: 10px;
+  max-height: 120px;
+  overflow: auto;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .06);
+  color: rgba(255, 255, 255, .72);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  white-space: pre-wrap;
 }
 
 @media (prefers-reduced-motion: reduce) {

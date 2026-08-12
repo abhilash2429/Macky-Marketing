@@ -5,6 +5,7 @@ import {
 import { FAQList } from "@/components/faq-list";
 import { CapabilityFeatures } from "@/components/capability-features";
 import { HeroCopy } from "@/components/hero-copy";
+import { HeroPlacementEditor } from "@/components/hero-placement-editor";
 import { PageShell } from "@/components/page-shell";
 import { Reveal } from "@/components/reveal";
 import { connectors } from "@/lib/content";
@@ -38,6 +39,7 @@ export default function HomePage() {
           <div className="hero-bg" aria-hidden="true" />
           <section className="hero" id="hero">
             <HeroCopy />
+            <HeroPlacementEditor />
           </section>
 
           <section className="intro-section" id="how-it-works">

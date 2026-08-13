@@ -2899,7 +2899,7 @@ main .connector-showcase .section-heading h2 {
   place-items: center;
   padding: 72px 24px;
   color: #111827;
-  background: linear-gradient(180deg, #0877f8 0%, #42baff 38%, #d7f7ff 67%, #f8fbf5 100%);
+  background: #0877f8 url('/assets/waitlist.png') center / cover no-repeat;
 }
 
 .waitlist-layout {

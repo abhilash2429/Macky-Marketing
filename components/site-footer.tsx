@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { Reveal } from "@/components/reveal";
 
 type FooterLink = readonly [label: string, href: string];
 
@@ -32,17 +33,21 @@ function FooterLinks({ title, links }: { title: string; links: FooterLink[] }) {
 export function SiteFooter() {
   return (
     <footer className="site-footer">
-      <div className="footer-brand">
-        <h2>Voice in.<span>Action out.</span></h2>
-        <Link className="button button-light" href="/waitlist" target="_blank" rel="noopener noreferrer">
-          Request early access <ArrowUpRight size={17} />
-        </Link>
-      </div>
+      <Reveal>
+        <div className="footer-brand">
+          <h2>Voice in.<span>Action out.</span></h2>
+          <Link className="button button-light" href="/waitlist" target="_blank" rel="noopener noreferrer">
+            Request early access <ArrowUpRight size={17} />
+          </Link>
+        </div>
+      </Reveal>
 
-      <div className="footer-directory">
-        <FooterLinks title="Product" links={productLinks} />
-        <FooterLinks title="Legal" links={legalLinks} />
-      </div>
+      <Reveal delay={90}>
+        <div className="footer-directory">
+          <FooterLinks title="Product" links={productLinks} />
+          <FooterLinks title="Legal" links={legalLinks} />
+        </div>
+      </Reveal>
 
       <div className="footer-bottom">
         <span>© 2026 Macky. Built for macOS 14.2 and later.</span>

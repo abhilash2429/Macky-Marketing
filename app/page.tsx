@@ -2,10 +2,11 @@ import Image from "next/image";
 import { FAQList } from "@/components/faq-list";
 import { CapabilityFeatures } from "@/components/capability-features";
 import { HeroCopy } from "@/components/hero-copy";
-import { HeroPlacementEditor } from "@/components/hero-placement-editor";
 import { PageShell } from "@/components/page-shell";
+import { MemoryPathMarquee } from "@/components/memory-path-marquee";
 import { Reveal } from "@/components/reveal";
 import { connectors } from "@/lib/content";
+import { publicAssetSrc } from "@/lib/public-asset";
 
 const howSteps = [
   {
@@ -36,18 +37,19 @@ export default function HomePage() {
           <div className="hero-bg" aria-hidden="true" />
           <section className="hero" id="hero">
             <HeroCopy />
-            <HeroPlacementEditor />
           </section>
 
           <section className="intro-section" id="how-it-works">
             <div className="section intro-content">
-              <div className="section-heading centered how-heading">
-                <span className="eyebrow">How it works</span>
-                <h2>
-                  Three steps. <br /> <em>One breath.</em>
-                </h2>
-                <p>Macky stays in the notch until you call it — then it gets out of the way.</p>
-              </div>
+              <Reveal>
+                <div className="section-heading centered how-heading">
+                  <span className="eyebrow">How it works</span>
+                  <h2>
+                    Three steps. <br /> <em>One breath.</em>
+                  </h2>
+                  <p>Macky stays in the notch until you call it — then it gets out of the way.</p>
+                </div>
+              </Reveal>
 
               <div className="how-stage">
                 <div className="how-flow" aria-hidden="true">
@@ -107,27 +109,47 @@ export default function HomePage() {
         </div>
 
         <section className="feature-stack section" id="capabilities">
-          <div className="section-heading centered how-heading capabilities-heading">
-            <span className="eyebrow">What Macky can do</span>
-          </div>
+          <Reveal>
+            <div className="section-heading centered how-heading capabilities-heading">
+              <span className="eyebrow">What Macky can do</span>
+            </div>
+          </Reveal>
           <CapabilityFeatures />
         </section>
 
         <section className="memory-story" id="memory-agents">
           <div className="memory-story-inner">
-            <header className="memory-story-hero">
-              <span className="eyebrow">Memory</span>
-              <h2>
-                Remembers the stuff <em>you meant to finish</em>
-              </h2>
-              <p>
-                Most assistants wipe the slate the second you let go.
-                Macky keeps the unfinished bits — the reply you owe,
-                the decision you almost made, the thread you said you’d
-                come back to — so the next time you speak, you’re not
-                starting from zero.
-              </p>
-            </header>
+            <div className="memory-story-lead">
+              <Reveal className="memory-story-hero-reveal">
+                <header className="memory-story-hero">
+                  <span className="eyebrow">Memory</span>
+                  <h2>
+                    Remembers the stuff <em>you meant to finish</em>
+                  </h2>
+                  <p>
+                    Most assistants wipe the slate the second you let go.
+                    Macky keeps the unfinished bits — the reply you owe,
+                    the decision you almost made, the thread you said you’d
+                    come back to — so the next time you speak, you’re not
+                    starting from zero.
+                  </p>
+                </header>
+              </Reveal>
+
+              <Reveal className="memory-story-macbook" delay={80}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={publicAssetSrc("/assets/macbook.png")}
+                  alt="Macky drafting a follow-up email on a MacBook"
+                  width={1495}
+                  height={1052}
+                />
+              </Reveal>
+            </div>
+
+            <Reveal className="memory-thread" delay={40}>
+              <MemoryPathMarquee />
+            </Reveal>
 
             <div className="memory-story-flow">
               <Reveal className="memory-beat" delay={0}>
@@ -195,21 +217,27 @@ export default function HomePage() {
         </section>
 
         <section className="section connector-showcase">
-          <div className="section-heading centered">
-            <h2>Your apps, one voice away.</h2>
-          </div>
+          <Reveal>
+            <div className="section-heading centered">
+              <h2>Your apps, one voice away.</h2>
+            </div>
+          </Reveal>
           <div className="connector-strip">
-            {connectors.map((connector) => (
-              <article key={connector.name}><Image src={connector.icon} width={52} height={52} alt="" /><strong>{connector.name}</strong><small>&ldquo;{connector.example}&rdquo;</small></article>
+            {connectors.map((connector, index) => (
+              <Reveal className="connector-reveal" key={connector.name} delay={index * 55}>
+                <article><Image src={connector.icon} width={52} height={52} alt="" /><strong>{connector.name}</strong><small>&ldquo;{connector.example}&rdquo;</small></article>
+              </Reveal>
             ))}
           </div>
         </section>
 
         <section className="section faq-section" id="faq">
-          <div className="section-heading">
-            <h2>Frequently Asked Questions</h2>
-            <p>What Macky does today, how permissions and context work, and what is still coming next.</p>
-          </div>
+          <Reveal>
+            <div className="section-heading">
+              <h2>Frequently Asked Questions</h2>
+              <p>What Macky does today, how permissions and context work, and what is still coming next.</p>
+            </div>
+          </Reveal>
           <FAQList />
         </section>
 

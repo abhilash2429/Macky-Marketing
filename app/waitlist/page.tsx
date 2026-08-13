@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
-import { createHash } from "crypto";
-import { readFileSync } from "fs";
-import path from "path";
 import Link from "next/link";
 import { MackyLogo } from "@/components/macky-logo";
 import { PageShell } from "@/components/page-shell";
 import { WaitlistForm } from "@/components/waitlist-form";
 import { getWaitlistCount } from "@/lib/supabase";
+import { publicAssetSrc } from "@/lib/public-asset";
 
 export const metadata: Metadata = {
   title: "Request early access",
@@ -16,9 +14,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 function waitlistBackgroundSrc() {
-  const file = path.join(process.cwd(), "public/assets/waitlist.png");
-  const hash = createHash("md5").update(readFileSync(file)).digest("hex").slice(0, 10);
-  return `/assets/waitlist.png?v=${hash}`;
+  return publicAssetSrc("/assets/waitlist.png");
 }
 
 export default async function WaitlistPage() {

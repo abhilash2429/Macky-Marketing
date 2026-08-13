@@ -7,11 +7,27 @@ import { DotmSquare12 } from "@/components/ui/dotm-square-12";
 export const MEMORY_PATH_PHRASE =
   "the reply you owe · the decision you almost made · the thread you said you’d come back to · the email you meant to send · the call you said you’d make · the idea that never quite landed · so next time you speak you’re not starting from zero";
 
+/** Short ribbon for narrow viewports — only a few words on screen. */
+export const MEMORY_PATH_PHRASE_MOBILE = "the reply you owe";
+
 export const MEMORY_PATH_D =
   "M-80 1.1 C-65 33.5, -41.8 135.9, 10.1 195.5 C62 255.1, 167.9 338, 231.5 358.7 C295.1 379.4, 354.6 343, 391.9 319.7 C429.2 296.4, 446.9 254.3, 455.2 219 C463.5 183.7, 461.7 138.8, 441.8 108.1 C421.9 77.4, 377.5 38.5, 335.8 34.7 C294.1 30.9, 217 48.5, 191.7 85.4 C166.4 122.3, 163.2 203.9, 184 256 C204.8 308.2, 247.1 372.1, 316.7 398.3 C386.3 424.5, 554.3 410.6, 601.9 413.1";
 
+/**
+ * One open loop on the left, then a short run into the centered notch.
+ * Kept large enough that glyphs don’t pile up on themselves.
+ */
+export const MEMORY_PATH_D_MOBILE =
+  "M0 70 C36 70, 42 18, 84 18 C136 18, 148 122, 84 122 C42 122, 50 70, 92 70 L210 70";
+
+export const MEMORY_PATH_VIEWBOX = "-80 0 900 450";
+export const MEMORY_PATH_VIEWBOX_MOBILE = "-4 0 220 140";
+
 /** Seconds for one full phrase to travel the path. */
 export const MEMORY_PATH_LOOP_SECONDS = 42;
+export const MEMORY_PATH_LOOP_SECONDS_MOBILE = 12;
+
+const MOBILE_MQ = "(max-width: 760px)";
 
 const NOTCH_W = 268;
 const NOTCH_H = 34;
@@ -76,6 +92,20 @@ function MemoryNotchCheck() {
   );
 }
 
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mobile = window.matchMedia(MOBILE_MQ);
+    const sync = () => setIsMobile(mobile.matches);
+    sync();
+    mobile.addEventListener("change", sync);
+    return () => mobile.removeEventListener("change", sync);
+  }, []);
+
+  return isMobile;
+}
+
 export function MemoryPathMarquee({ className = "" }: MemoryPathMarqueeProps) {
   const reactId = useId().replace(/:/g, "");
   const pathId = `memory-thread-loose-${reactId}`;
@@ -85,6 +115,11 @@ export function MemoryPathMarquee({ className = "" }: MemoryPathMarqueeProps) {
   const gapRef = useRef<SVGTextPathElement>(null);
   const measureRef = useRef<SVGTextElement>(null);
   const notchRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+  const phrase = isMobile ? MEMORY_PATH_PHRASE_MOBILE : MEMORY_PATH_PHRASE;
+  const pathD = isMobile ? MEMORY_PATH_D_MOBILE : MEMORY_PATH_D;
+  const viewBox = isMobile ? MEMORY_PATH_VIEWBOX_MOBILE : MEMORY_PATH_VIEWBOX;
+  const loopSeconds = isMobile ? MEMORY_PATH_LOOP_SECONDS_MOBILE : MEMORY_PATH_LOOP_SECONDS;
   const [phaseIndex, setPhaseIndex] = useState(0);
   const phase = PHASES[phaseIndex];
   const isClosing = phase.kind === "closing";
@@ -99,7 +134,7 @@ export function MemoryPathMarquee({ className = "" }: MemoryPathMarqueeProps) {
     const measure = measureRef.current;
     if (!path || !lead || !gap || !measure) return;
 
-    const unit = `${MEMORY_PATH_PHRASE} · `;
+    const unit = `${phrase} · `;
     const pathLen = path.getTotalLength();
     measure.textContent = unit;
     const phraseLen = Math.max(measure.getComputedTextLength(), 1);
@@ -107,7 +142,11 @@ export function MemoryPathMarquee({ className = "" }: MemoryPathMarqueeProps) {
     // Lead: long ribbon covering the path from the moving head onward.
     // Gap: exactly ONE phrase — only plugs the empty left segment, so the
     // two streams meet at one point and never stack on top of each other.
-    const repeats = Math.ceil((pathLen + phraseLen) / phraseLen) + 1;
+    // Mobile uses a short open loop — keep just enough text to cover it once
+    // so glyphs don’t pile up on the curve.
+    const repeats = isMobile
+      ? Math.max(2, Math.ceil(pathLen / phraseLen) + 1)
+      : Math.ceil((pathLen + phraseLen) / phraseLen) + 1;
     lead.textContent = unit.repeat(repeats);
     gap.textContent = unit;
 
@@ -121,7 +160,7 @@ export function MemoryPathMarquee({ className = "" }: MemoryPathMarqueeProps) {
     let offset = 0;
     let frame = 0;
     let last = performance.now();
-    const speed = phraseLen / (MEMORY_PATH_LOOP_SECONDS * 1000);
+    const speed = phraseLen / (loopSeconds * 1000);
 
     const tick = (now: number) => {
       const dt = Math.min(64, now - last);
@@ -137,7 +176,7 @@ export function MemoryPathMarquee({ className = "" }: MemoryPathMarqueeProps) {
 
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, []);
+  }, [phrase, pathD, loopSeconds, isMobile]);
 
   useEffect(() => {
     const svg = svgRef.current;
@@ -164,38 +203,22 @@ export function MemoryPathMarquee({ className = "" }: MemoryPathMarqueeProps) {
       notch.dataset.placed = "true";
     };
 
-    const mobile = window.matchMedia("(max-width: 760px)");
-    const placeIfDesktop = () => {
-      if (mobile.matches) {
-        notch.style.left = "";
-        notch.style.top = "";
-        return;
-      }
-      place();
-    };
-
-    placeIfDesktop();
-    const observer = new ResizeObserver(placeIfDesktop);
+    // Desktop + mobile: park the notch on the path end so the ribbon
+    // reads into it. The mobile path is authored to finish near center.
+    place();
+    const observer = new ResizeObserver(place);
     observer.observe(svg);
-    window.addEventListener("resize", placeIfDesktop);
-    mobile.addEventListener("change", placeIfDesktop);
+    window.addEventListener("resize", place);
     return () => {
       observer.disconnect();
-      window.removeEventListener("resize", placeIfDesktop);
-      mobile.removeEventListener("change", placeIfDesktop);
+      window.removeEventListener("resize", place);
     };
-  }, []);
+  }, [pathD, isMobile]);
 
   useEffect(() => {
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (motionQuery.matches) {
       setPhaseIndex(PHASES.length - 1);
-      return;
-    }
-
-    const mobile = window.matchMedia("(max-width: 760px)");
-    if (mobile.matches && phaseIndex === 0) {
-      setPhaseIndex(1);
       return;
     }
 
@@ -235,12 +258,12 @@ export function MemoryPathMarquee({ className = "" }: MemoryPathMarqueeProps) {
       <svg
         ref={svgRef}
         className={`memory-thread-path ${className}`.trim()}
-        viewBox="-80 0 900 450"
-        preserveAspectRatio="xMinYMin meet"
+        viewBox={viewBox}
+        preserveAspectRatio={isMobile ? "xMaxYMid meet" : "xMinYMin meet"}
         aria-hidden="true"
       >
         <defs>
-          <path id={pathId} ref={pathRef} d={MEMORY_PATH_D} />
+          <path id={pathId} ref={pathRef} d={pathD} />
         </defs>
 
         <text
@@ -253,12 +276,12 @@ export function MemoryPathMarquee({ className = "" }: MemoryPathMarqueeProps) {
 
         <text className="memory-thread-loose-text">
           <textPath ref={gapRef} href={`#${pathId}`} startOffset="0">
-            {`${MEMORY_PATH_PHRASE} · `}
+            {`${phrase} · `}
           </textPath>
         </text>
         <text className="memory-thread-loose-text">
           <textPath ref={leadRef} href={`#${pathId}`} startOffset="0">
-            {`${MEMORY_PATH_PHRASE} · ${MEMORY_PATH_PHRASE} · ${MEMORY_PATH_PHRASE} · `}
+            {`${phrase} · ${phrase} · ${phrase} · `}
           </textPath>
         </text>
       </svg>
@@ -270,17 +293,20 @@ export function MemoryPathMarquee({ className = "" }: MemoryPathMarqueeProps) {
 
       <div
         ref={notchRef}
-        className={`memory-notch${isClosing ? " is-closing" : ""}`}
+        className={`memory-notch${isClosing ? " is-closing" : ""}${isMobile ? " is-mobile" : ""}`}
         aria-hidden="true"
       >
         <ul className="memory-closed-stack">
           {CLOSED_LOOPS.map((loop, index) => {
             const shown = index < visibleCount;
             const current = isClosing && index === closingIndex;
+            // 0 = middle pop-out, then alternate up / down.
+            const slot =
+              index === 0 ? "middle" : index % 2 === 1 ? "up" : "down";
             return (
               <li
                 key={loop.name}
-                className={`memory-loop-card${shown ? " is-in" : ""}${current ? " is-current" : ""}`}
+                className={`memory-loop-card is-slot-${index} is-${slot}${shown ? " is-in" : ""}${current ? " is-current" : ""}`}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={loop.icon} alt="" width={28} height={28} />

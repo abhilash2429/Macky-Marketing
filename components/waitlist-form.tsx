@@ -76,7 +76,7 @@ export function WaitlistForm({ initialCount = 0 }: { initialCount?: number }) {
               onChange={(event) => setEmail(event.target.value)}
               required
             />
-            <button type="submit" disabled={submissionState === "submitting"}>
+            <button type="submit" className="button-hero" disabled={submissionState === "submitting"}>
               {submissionState === "submitting" ? "Saving…" : "Request access"}
             </button>
             {submissionState === "error" && <p className="waitlist-error" role="alert">{message}</p>}

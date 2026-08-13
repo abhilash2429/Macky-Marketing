@@ -34,7 +34,6 @@ export default function HomePage() {
     <PageShell deferHeaderEntrance>
         <main>
         <div className="hero-stage">
-          <div className="hero-bg" aria-hidden="true" />
           <section className="hero" id="hero">
             <HeroCopy />
           </section>

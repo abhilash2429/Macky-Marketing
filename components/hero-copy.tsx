@@ -145,7 +145,7 @@ export function HeroCopy() {
         aria-hidden={!(isDescriptionComplete || useLiteHero)}
       >
         <a
-          className="button button-dark"
+          className="button button-hero"
           href="/waitlist"
           target="_blank"
           rel="noopener noreferrer"

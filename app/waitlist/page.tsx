@@ -4,7 +4,6 @@ import { MackyLogo } from "@/components/macky-logo";
 import { PageShell } from "@/components/page-shell";
 import { WaitlistForm } from "@/components/waitlist-form";
 import { getWaitlistCount } from "@/lib/supabase";
-import { publicAssetSrc } from "@/lib/public-asset";
 
 export const metadata: Metadata = {
   title: "Request early access",
@@ -13,23 +12,12 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-function waitlistBackgroundSrc() {
-  return publicAssetSrc("/assets/waitlist.png");
-}
-
 export default async function WaitlistPage() {
   const waitlistCount = await getWaitlistCount();
 
   return (
     <PageShell hideHeader hideFooter>
       <main className="waitlist-page">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          className="waitlist-page-bg"
-          src={waitlistBackgroundSrc()}
-          alt=""
-          aria-hidden="true"
-        />
         <section className="waitlist-layout" id="waitlist-form" aria-label="Request early access">
           <Link className="waitlist-logo" href="/" aria-label="Macky home">
             <MackyLogo size={56} glow loading="eager" />

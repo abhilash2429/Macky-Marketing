@@ -1291,7 +1291,25 @@ main .section-heading {
   -webkit-font-smoothing: antialiased;
 }
 
-.memory-thread.is-visible .memory-thread-loose-text {
+.memory-thread-glyph {
+  fill: rgba(11, 18, 32, .4);
+  font-family: var(--font-sans), Inter, sans-serif;
+  font-size: 15px;
+  letter-spacing: .01em;
+  dominant-baseline: middle;
+  text-anchor: middle;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  pointer-events: none;
+}
+
+.memory-thread-glyph-layer {
+  opacity: 0;
+  transition: opacity .5s var(--ease-out) .1s;
+}
+
+.memory-thread.is-visible .memory-thread-loose-text,
+.memory-thread.is-visible .memory-thread-glyph-layer {
   opacity: 1;
 }
 
@@ -1324,8 +1342,16 @@ main .section-heading {
   .memory-thread-loose-text {
     font-size: 15px;
     letter-spacing: .01em;
-    /* Don’t wait on reveal opacity — iOS can leave the ribbon stuck at 0. */
     opacity: 1;
+  }
+
+  .memory-thread-glyph-layer {
+    /* Don’t wait on reveal opacity — keep the mobile ribbon running. */
+    opacity: 1;
+  }
+
+  .memory-thread-glyph {
+    font-size: 15px;
   }
 
   .memory-notch,

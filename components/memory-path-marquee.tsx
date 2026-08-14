@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import type { RefObject } from "react";
 import { notchPath } from "@/components/notch-shape";
 import { DotmSquare12 } from "@/components/ui/dotm-square-12";
 
@@ -25,7 +26,7 @@ export const MEMORY_PATH_VIEWBOX_MOBILE = "-4 0 220 140";
 
 /** Seconds for one full phrase to travel the path. */
 export const MEMORY_PATH_LOOP_SECONDS = 42;
-export const MEMORY_PATH_LOOP_SECONDS_MOBILE = 12;
+export const MEMORY_PATH_LOOP_SECONDS_MOBILE = 10;
 
 const MOBILE_MQ = "(max-width: 760px)";
 
@@ -93,9 +94,9 @@ function MemoryNotchCheck() {
 }
 
 function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState<boolean | null>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const mobile = window.matchMedia(MOBILE_MQ);
     const sync = () => setIsMobile(mobile.matches);
     sync();
@@ -108,7 +109,6 @@ function useIsMobile() {
 
 function setTextPathOffset(el: SVGTextPathElement, value: number) {
   el.setAttribute("startOffset", String(value));
-  // WebKit sometimes ignores attribute updates unless baseVal is touched.
   const animated = el.startOffset;
   if (animated?.baseVal) {
     try {
@@ -119,75 +119,193 @@ function setTextPathOffset(el: SVGTextPathElement, value: number) {
   }
 }
 
-function bindTextPath(el: SVGTextPathElement, pathId: string) {
-  const ref = `#${pathId}`;
-  el.setAttribute("href", ref);
-  el.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", ref);
+/**
+ * Mobile ribbon: place glyphs with getPointAtLength.
+ * Avoids SVG textPath startOffset, which iOS Safari often fails to animate.
+ */
+function MobilePathRibbon({
+  className = "",
+  pathD,
+  viewBox,
+  phrase,
+  loopSeconds,
+  pathRef,
+  svgRef,
+}: {
+  className?: string;
+  pathD: string;
+  viewBox: string;
+  phrase: string;
+  loopSeconds: number;
+  pathRef: RefObject<SVGPathElement | null>;
+  svgRef: RefObject<SVGSVGElement | null>;
+}) {
+  const layerRef = useRef<SVGGElement>(null);
+  const measureRef = useRef<SVGTextElement>(null);
+
+  useEffect(() => {
+    const path = pathRef.current;
+    const layer = layerRef.current;
+    const measure = measureRef.current;
+    if (!path || !layer || !measure) return;
+
+    const unit = `${phrase} · `;
+    const pathLen = Math.max(path.getTotalLength(), 1);
+
+    measure.textContent = unit;
+    void measure.getBBox();
+    let unitLen = measure.getComputedTextLength();
+    if (!unitLen || unitLen < 2) {
+      unitLen = unit.length * 8.2;
+    }
+
+    // Sample character advances once up front.
+    const advances: number[] = [];
+    let cursor = 0;
+    for (let i = 0; i < unit.length; i += 1) {
+      measure.textContent = unit.slice(0, i + 1);
+      const next = measure.getComputedTextLength() || (i + 1) * (unitLen / unit.length);
+      advances.push(Math.max(next - cursor, unitLen / unit.length));
+      cursor = next;
+    }
+    measure.textContent = "";
+
+    const copies = Math.max(3, Math.ceil(pathLen / unitLen) + 2);
+    const chars: { ch: string; advance: number }[] = [];
+    for (let c = 0; c < copies; c += 1) {
+      for (let i = 0; i < unit.length; i += 1) {
+        chars.push({ ch: unit[i], advance: advances[i] });
+      }
+    }
+
+    // Build glyph nodes once; animate via transform attributes.
+    layer.replaceChildren();
+    const nodes = chars.map(({ ch }) => {
+      const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      text.setAttribute("class", "memory-thread-glyph");
+      text.textContent = ch;
+      text.style.opacity = "0";
+      layer.appendChild(text);
+      return text;
+    });
+
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const paint = (offset: number) => {
+      let dist = -offset;
+      for (let i = 0; i < chars.length; i += 1) {
+        const node = nodes[i];
+        const along = dist;
+        dist += chars[i].advance;
+
+        if (along < -4 || along > pathLen + 4) {
+          node.style.opacity = "0";
+          continue;
+        }
+
+        const p1 = path.getPointAtLength(Math.max(0, Math.min(pathLen, along)));
+        const p2 = path.getPointAtLength(Math.max(0, Math.min(pathLen, along + 2)));
+        const angle = (Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180) / Math.PI;
+        node.style.opacity = "1";
+        node.setAttribute(
+          "transform",
+          `translate(${p1.x} ${p1.y}) rotate(${angle})`,
+        );
+      }
+    };
+
+    if (motionQuery.matches) {
+      paint(0);
+      return;
+    }
+
+    let offset = 0;
+    let frame = 0;
+    let last = performance.now();
+    const speed = unitLen / (loopSeconds * 1000);
+
+    const tick = (now: number) => {
+      const dt = Math.min(64, now - last);
+      last = now;
+      offset = (offset + speed * dt) % unitLen;
+      paint(offset);
+      frame = requestAnimationFrame(tick);
+    };
+
+    paint(0);
+    frame = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(frame);
+      layer.replaceChildren();
+    };
+  }, [pathD, phrase, loopSeconds, pathRef]);
+
+  return (
+    <svg
+      ref={svgRef}
+      className={`memory-thread-path is-mobile-ribbon ${className}`.trim()}
+      viewBox={viewBox}
+      preserveAspectRatio="xMaxYMid meet"
+      aria-hidden="true"
+    >
+      <path
+        ref={pathRef}
+        d={pathD}
+        fill="none"
+        stroke="none"
+        pointerEvents="none"
+      />
+      <text
+        ref={measureRef}
+        className="memory-thread-loose-text"
+        x={-9999}
+        y={-9999}
+        opacity={0}
+      />
+      <g ref={layerRef} className="memory-thread-glyph-layer" />
+    </svg>
+  );
 }
 
-export function MemoryPathMarquee({ className = "" }: MemoryPathMarqueeProps) {
+function DesktopPathRibbon({
+  className = "",
+  pathD,
+  viewBox,
+  phrase,
+  loopSeconds,
+  pathRef,
+  svgRef,
+}: {
+  className?: string;
+  pathD: string;
+  viewBox: string;
+  phrase: string;
+  loopSeconds: number;
+  pathRef: RefObject<SVGPathElement | null>;
+  svgRef: RefObject<SVGSVGElement | null>;
+}) {
   const reactId = useId().replace(/:/g, "");
   const pathId = `memory-thread-loose-${reactId}`;
-  const svgRef = useRef<SVGSVGElement>(null);
-  const pathRef = useRef<SVGPathElement>(null);
   const leadRef = useRef<SVGTextPathElement>(null);
   const gapRef = useRef<SVGTextPathElement>(null);
   const measureRef = useRef<SVGTextElement>(null);
-  const notchRef = useRef<HTMLDivElement>(null);
-  const isMobile = useIsMobile();
-  const [layoutReady, setLayoutReady] = useState(false);
-  const phrase = isMobile ? MEMORY_PATH_PHRASE_MOBILE : MEMORY_PATH_PHRASE;
-  const pathD = isMobile ? MEMORY_PATH_D_MOBILE : MEMORY_PATH_D;
-  const viewBox = isMobile ? MEMORY_PATH_VIEWBOX_MOBILE : MEMORY_PATH_VIEWBOX;
-  const loopSeconds = isMobile ? MEMORY_PATH_LOOP_SECONDS_MOBILE : MEMORY_PATH_LOOP_SECONDS;
-  const [phaseIndex, setPhaseIndex] = useState(0);
-  const phase = PHASES[phaseIndex];
-  const isClosing = phase.kind === "closing";
-  const closingIndex = isClosing ? phase.index : -1;
-  const notchLabel = isClosing ? CLOSED_LOOPS[phase.index].notch : "memorizing";
-  const visibleCount = isClosing ? phase.index + 1 : 0;
-
-  // Wait one frame after mobile/desktop path swap so iOS can layout the SVG
-  // before we measure lengths and start the marquee.
-  useEffect(() => {
-    setLayoutReady(false);
-    const id = window.requestAnimationFrame(() => {
-      setLayoutReady(true);
-    });
-    return () => window.cancelAnimationFrame(id);
-  }, [pathD, isMobile]);
 
   useEffect(() => {
-    if (!layoutReady) return;
-
     const path = pathRef.current;
     const lead = leadRef.current;
     const gap = gapRef.current;
     const measure = measureRef.current;
     if (!path || !lead || !gap || !measure) return;
 
-    bindTextPath(lead, pathId);
-    bindTextPath(gap, pathId);
-
     const unit = `${phrase} · `;
     const pathLen = path.getTotalLength();
     measure.textContent = unit;
-    // Force layout before measuring — iOS often returns 0 on the first read.
     void measure.getBBox();
     let phraseLen = measure.getComputedTextLength();
     if (!phraseLen || phraseLen < 2) {
-      // Fallback estimate so the marquee still advances on stubborn WebKit.
-      phraseLen = unit.length * (isMobile ? 8.2 : 11);
+      phraseLen = unit.length * 11;
     }
 
-    // Lead: long ribbon covering the path from the moving head onward.
-    // Gap: exactly ONE phrase — only plugs the empty left segment, so the
-    // two streams meet at one point and never stack on top of each other.
-    // Mobile uses a short open loop — keep just enough text to cover it once
-    // so glyphs don’t pile up on the curve.
-    const repeats = isMobile
-      ? Math.max(2, Math.ceil(pathLen / phraseLen) + 1)
-      : Math.ceil((pathLen + phraseLen) / phraseLen) + 1;
+    const repeats = Math.ceil((pathLen + phraseLen) / phraseLen) + 1;
     lead.textContent = unit.repeat(repeats);
     gap.textContent = unit;
 
@@ -206,9 +324,6 @@ export function MemoryPathMarquee({ className = "" }: MemoryPathMarqueeProps) {
     const tick = (now: number) => {
       const dt = Math.min(64, now - last);
       last = now;
-      // Forward (positive). Lead advances; gap rides one phrase behind and
-      // only has one phrase of content, so it fills [0 → offset] without
-      // redrawing over the rest of the path.
       offset = (offset + speed * dt) % phraseLen;
       setTextPathOffset(lead, offset);
       setTextPathOffset(gap, offset - phraseLen);
@@ -217,10 +332,66 @@ export function MemoryPathMarquee({ className = "" }: MemoryPathMarqueeProps) {
 
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [phrase, pathD, loopSeconds, isMobile, layoutReady, pathId]);
+  }, [phrase, pathD, loopSeconds, pathRef]);
+
+  return (
+    <svg
+      ref={svgRef}
+      className={`memory-thread-path ${className}`.trim()}
+      viewBox={viewBox}
+      preserveAspectRatio="xMinYMin meet"
+      aria-hidden="true"
+    >
+      <path
+        id={pathId}
+        ref={pathRef}
+        d={pathD}
+        fill="none"
+        stroke="none"
+        pointerEvents="none"
+      />
+
+      <text
+        ref={measureRef}
+        className="memory-thread-loose-text"
+        x={-9999}
+        y={-9999}
+        opacity={0}
+      />
+
+      <text className="memory-thread-loose-text">
+        <textPath ref={gapRef} href={`#${pathId}`} startOffset="0">
+          {`${phrase} · `}
+        </textPath>
+      </text>
+      <text className="memory-thread-loose-text">
+        <textPath ref={leadRef} href={`#${pathId}`} startOffset="0">
+          {`${phrase} · ${phrase} · ${phrase} · `}
+        </textPath>
+      </text>
+    </svg>
+  );
+}
+
+export function MemoryPathMarquee({ className = "" }: MemoryPathMarqueeProps) {
+  const svgRef = useRef<SVGSVGElement>(null);
+  const pathRef = useRef<SVGPathElement>(null);
+  const notchRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+  const mobile = isMobile === true;
+  const phrase = mobile ? MEMORY_PATH_PHRASE_MOBILE : MEMORY_PATH_PHRASE;
+  const pathD = mobile ? MEMORY_PATH_D_MOBILE : MEMORY_PATH_D;
+  const viewBox = mobile ? MEMORY_PATH_VIEWBOX_MOBILE : MEMORY_PATH_VIEWBOX;
+  const loopSeconds = mobile ? MEMORY_PATH_LOOP_SECONDS_MOBILE : MEMORY_PATH_LOOP_SECONDS;
+  const [phaseIndex, setPhaseIndex] = useState(0);
+  const phase = PHASES[phaseIndex];
+  const isClosing = phase.kind === "closing";
+  const closingIndex = isClosing ? phase.index : -1;
+  const notchLabel = isClosing ? CLOSED_LOOPS[phase.index].notch : "memorizing";
+  const visibleCount = isClosing ? phase.index + 1 : 0;
 
   useEffect(() => {
-    if (!layoutReady) return;
+    if (isMobile === null) return;
 
     const svg = svgRef.current;
     const path = pathRef.current;
@@ -229,6 +400,7 @@ export function MemoryPathMarquee({ className = "" }: MemoryPathMarqueeProps) {
 
     const place = () => {
       const len = path.getTotalLength();
+      if (!len) return;
       const end = path.getPointAtLength(len);
       const ctm = svg.getScreenCTM();
       if (!ctm) return;
@@ -237,26 +409,25 @@ export function MemoryPathMarquee({ className = "" }: MemoryPathMarqueeProps) {
       const origin = parent?.getBoundingClientRect();
       if (!origin) return;
 
-      // DOMPoint is safer than the removed createSVGPoint() on modern WebKit.
       const screen = new DOMPoint(end.x, end.y).matrixTransform(ctm);
       notch.style.left = `${screen.x - origin.left}px`;
       notch.style.top = `${screen.y - origin.top}px`;
       notch.dataset.placed = "true";
     };
 
-    // Desktop + mobile: park the notch on the path end so the ribbon
-    // reads into it. The mobile path is authored to finish near center.
-    place();
+    // Defer one frame so the active ribbon SVG has layout on iOS.
+    const boot = window.requestAnimationFrame(place);
     const observer = new ResizeObserver(place);
     observer.observe(svg);
     window.addEventListener("resize", place);
     window.addEventListener("orientationchange", place);
     return () => {
+      window.cancelAnimationFrame(boot);
       observer.disconnect();
       window.removeEventListener("resize", place);
       window.removeEventListener("orientationchange", place);
     };
-  }, [pathD, isMobile, layoutReady]);
+  }, [pathD, isMobile]);
 
   useEffect(() => {
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -269,7 +440,6 @@ export function MemoryPathMarquee({ className = "" }: MemoryPathMarqueeProps) {
     if (!root) return;
 
     let timer = 0;
-    let active = false;
 
     const advance = () => {
       setPhaseIndex((current) => (current + 1) % PHASES.length);
@@ -282,11 +452,10 @@ export function MemoryPathMarquee({ className = "" }: MemoryPathMarqueeProps) {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        active = entry.isIntersecting;
         window.clearTimeout(timer);
-        if (active) arm();
+        if (entry.isIntersecting) arm();
       },
-      { threshold: 0.2 },
+      { threshold: 0.15 },
     );
 
     observer.observe(root);
@@ -298,52 +467,27 @@ export function MemoryPathMarquee({ className = "" }: MemoryPathMarqueeProps) {
 
   return (
     <>
-      <svg
-        ref={svgRef}
-        className={`memory-thread-path ${className}`.trim()}
-        viewBox={viewBox}
-        preserveAspectRatio={isMobile ? "xMaxYMid meet" : "xMinYMin meet"}
-        aria-hidden="true"
-      >
-        {/* Keep the path out of <defs> — iOS Safari often fails textPath + defs. */}
-        <path
-          id={pathId}
-          ref={pathRef}
-          d={pathD}
-          fill="none"
-          stroke="none"
-          pointerEvents="none"
+      {isMobile === null ? null : mobile ? (
+        <MobilePathRibbon
+          className={className}
+          pathD={pathD}
+          viewBox={viewBox}
+          phrase={phrase}
+          loopSeconds={loopSeconds}
+          pathRef={pathRef}
+          svgRef={svgRef}
         />
-
-        <text
-          ref={measureRef}
-          className="memory-thread-loose-text"
-          x={-9999}
-          y={-9999}
-          opacity={0}
+      ) : (
+        <DesktopPathRibbon
+          className={className}
+          pathD={pathD}
+          viewBox={viewBox}
+          phrase={phrase}
+          loopSeconds={loopSeconds}
+          pathRef={pathRef}
+          svgRef={svgRef}
         />
-
-        <text className="memory-thread-loose-text">
-          <textPath
-            ref={gapRef}
-            href={`#${pathId}`}
-            xlinkHref={`#${pathId}`}
-            startOffset="0"
-          >
-            {`${phrase} · `}
-          </textPath>
-        </text>
-        <text className="memory-thread-loose-text">
-          <textPath
-            ref={leadRef}
-            href={`#${pathId}`}
-            xlinkHref={`#${pathId}`}
-            startOffset="0"
-          >
-            {`${phrase} · ${phrase} · ${phrase} · `}
-          </textPath>
-        </text>
-      </svg>
+      )}
 
       <p className="sr-only">
         After memorizing, Macky closes the loops — a reply to Sam Altman, a Q3 report to Elon Musk,
@@ -352,14 +496,13 @@ export function MemoryPathMarquee({ className = "" }: MemoryPathMarqueeProps) {
 
       <div
         ref={notchRef}
-        className={`memory-notch${isClosing ? " is-closing" : ""}${isMobile ? " is-mobile" : ""}`}
+        className={`memory-notch${isClosing ? " is-closing" : ""}${mobile ? " is-mobile" : ""}`}
         aria-hidden="true"
       >
         <ul className="memory-closed-stack">
           {CLOSED_LOOPS.map((loop, index) => {
             const shown = index < visibleCount;
             const current = isClosing && index === closingIndex;
-            // 0 = middle pop-out, then alternate up / down.
             const slot =
               index === 0 ? "middle" : index % 2 === 1 ? "up" : "down";
             return (
